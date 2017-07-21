@@ -1,0 +1,35 @@
+{
+  "name": "ionic-native-http-connection-backend",
+  "version": "0.0.0",
+  "description": "Solves CORS problem with Ionic 3 + WKWebView",
+  "main": "src/index.ts",
+  "scripts": {
+    "commit": "git-cz",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sneas/ionic-native-http-connection-backend.git"
+  },
+  "keywords": [
+    "ionic",
+    "ionic3",
+    "wk-web-view",
+    "cors"
+  ],
+  "author": "Dima Snisarenko",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sneas/ionic-native-http-connection-backend/issues"
+  },
+  "homepage": "https://github.com/sneas/ionic-native-http-connection-backend#readme",
+  "devDependencies": {
+    "commitizen": "^2.9.6",
+    "cz-conventional-changelog": "^2.0.0"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  }
+}
