@@ -4,18 +4,7 @@ import {
     ResponseOptions, XHRBackend
 } from '@angular/http';
 import { HTTP, HTTPResponse } from '@ionic-native/http';
-import { Platform } from 'ionic-angular';
-import { MockBackend } from '@angular/http/testing';
 import { HTTPError, NativeHttpBackend, NativeHttpConnection } from './index';
-
-class PlatformMock extends Platform {
-
-    public forcedPlatform: string = 'cordova';
-
-    is(platformName: string): boolean {
-        return platformName === this.forcedPlatform;
-    }
-}
 
 class HTTPMock extends HTTP {
 
@@ -36,49 +25,6 @@ class HTTPMock extends HTTP {
         });
     }
 }
-
-describe('NativeHttpBackend', () => {
-    beforeEach(() => {
-        TestBed.configureTestingModule({
-            providers: [
-                // {provide: HTTP, userClass: HTTPMock},
-                // {provide: Platform, useClass: PlatformMock},
-                {provide: ResponseOptions, useClass: BaseResponseOptions},
-                // MockBackend,
-                NativeHttpBackend
-            ]
-        });
-    });
-
-    it('should construct', async(inject(
-        [NativeHttpBackend], (httpBackend: NativeHttpBackend) => {
-            expect(httpBackend).toBeDefined();
-        })));
-
-    it('should return NativeHttpConnection in case of platform is Cordova and outgoing request', async(inject(
-        [NativeHttpBackend, Platform], (httpBackend: NativeHttpBackend, platform: PlatformMock) => {
-            platform.forcedPlatform = 'cordova';
-            const connection = httpBackend.createConnection(new Request(new RequestOptions({
-                url: 'http://google.com',
-                method: RequestMethod.Post
-            })));
-            expect(connection instanceof NativeHttpConnection).toBeTruthy();
-        })));
-
-    it('should return fallback connection in case of platform is Cordova and local request', async(inject(
-        [NativeHttpBackend, Platform], (httpBackend: NativeHttpBackend, platform: PlatformMock) => {
-            platform.forcedPlatform = 'cordova';
-            const connection = httpBackend.createConnection(new Request(new RequestOptions({url: '/api'})));
-            expect(connection instanceof NativeHttpConnection).toBeFalsy();
-        })));
-
-    it('should return fallback connection in case of platform is not Cordova', async(inject(
-        [NativeHttpBackend, Platform], (httpBackend: NativeHttpBackend, platform: PlatformMock) => {
-            platform.forcedPlatform = 'browser';
-            const connection = httpBackend.createConnection(new Request(new RequestOptions({url: 'http://google.com'})));
-            expect(connection instanceof NativeHttpConnection).toBeFalsy();
-        })));
-});
 
 describe('NativeHttpConnection', () => {
     let http: HTTPMock;

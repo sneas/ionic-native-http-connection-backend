@@ -24,12 +24,36 @@
   },
   "homepage": "https://github.com/sneas/ionic-native-http-connection-backend#readme",
   "devDependencies": {
+    "@angular/compiler": "^4.3.1",
+    "@angular/http": "^4.3.1",
+    "@angular/platform-browser-dynamic": "^4.3.1",
+    "@ionic-native/core": "^4.1.0",
+    "@ionic-native/http": "^4.1.0",
+    "@types/jest": "^20.0.4",
     "commitizen": "^2.9.6",
-    "cz-conventional-changelog": "^2.0.0"
+    "core-js": "^2.4.1",
+    "cz-conventional-changelog": "^2.0.0",
+    "jest": "^20.0.4",
+    "jest-preset-angular": "^2.0.5",
+    "lodash-es": "^4.17.4",
+    "ts-jest": "^20.0.7",
+    "typescript": "^2.4.2"
   },
   "config": {
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
     }
+  },
+  "jest": {
+    "globals": {
+      "ts-jest": {
+        "tsConfigFile": "tsconfig.json"
+      }
+    },
+    "preset": "jest-preset-angular",
+    "setupTestFrameworkScriptFile": "<rootDir>/jest.init.ts",
+    "transformIgnorePatterns": [
+      "node_modules/(?!@ngrx|angular2-ui-switch|ng-dynamic|@ionic-native|lodash-es)"
+    ]
   }
 }

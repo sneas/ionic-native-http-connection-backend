@@ -1,14 +1,11 @@
 import {Injectable} from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import {
-    Connection, ConnectionBackend, Headers, ReadyState, Request, RequestMethod, Response, ResponseOptions,
-    XHRBackend
+    Connection, ConnectionBackend, Headers, ReadyState, Request, RequestMethod, Response, ResponseOptions
 } from '@angular/http';
 import { HTTP, HTTPResponse } from '@ionic-native/http';
 import { Observer } from 'rxjs/Observer';
-import { Platform } from 'ionic-angular';
 import mapValues from 'lodash-es/mapValues';
-import { MockBackend } from '@angular/http/testing';
 
 export interface HTTPError {
     error: string;
@@ -90,20 +87,12 @@ export class NativeHttpConnection implements Connection {
 @Injectable()
 export class NativeHttpBackend implements ConnectionBackend {
     constructor(
-        // private nativeHttp: HTTP
-        private baseResponseOptions: ResponseOptions,
-        // private fallback: MockBackend,
-        // private platform: Platform
+        private nativeHttp: HTTP,
+        private baseResponseOptions: ResponseOptions
     ) {
     }
 
-    // createConnection(request: Request): Connection {
-    //     const isLocalRequest = request.url.indexOf('/') === 0;
-    //
-    //     if (!this.platform.is('cordova') || isLocalRequest) {
-    //         return this.fallback.createConnection(request);
-    //     }
-    //
-    //     return new NativeHttpConnection(request, this.nativeHttp, this.baseResponseOptions);
-    // }
+    createConnection(request: Request): Connection {
+        return new NativeHttpConnection(request, this.nativeHttp, this.baseResponseOptions);
+    }
 }
