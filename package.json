@@ -40,6 +40,7 @@
     "jest": "^20.0.4",
     "jest-preset-angular": "^2.0.5",
     "lodash-es": "^4.17.4",
+    "rxjs": "^5.4.2",
     "semantic-release": "^6.3.6",
     "ts-jest": "^20.0.7",
     "typescript": "^2.4.2",
