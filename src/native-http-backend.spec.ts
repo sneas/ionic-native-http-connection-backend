@@ -1,10 +1,10 @@
-import { async, inject, TestBed } from '@angular/core/testing';
 import {
-    BaseResponseOptions, Headers, HttpModule, Request, RequestMethod, RequestOptions,
-    ResponseOptions, XHRBackend
+    Headers,
+    Request, RequestMethod, RequestOptions
 } from '@angular/http';
-import { HTTP, HTTPResponse } from '@ionic-native/http';
-import { HTTPError, NativeHttpBackend, NativeHttpConnection } from './index';
+import { HTTPResponse } from '@ionic-native/http';
+import { HTTPError, NativeHttpConnection } from './native-http-backend';
+import { HTTP } from './cordova-http-plugin';
 
 class HTTPMock extends HTTP {
 
@@ -24,6 +24,27 @@ class HTTPMock extends HTTP {
             this.requestReject = reject;
         });
     }
+
+    postJson(): Promise<HTTPResponse> {
+        return new Promise((resolve, reject) => {
+            this.requestResolve = resolve;
+            this.requestReject = reject;
+        });
+    }
+
+    put(): Promise<HTTPResponse> {
+        return new Promise((resolve, reject) => {
+            this.requestResolve = resolve;
+            this.requestReject = reject;
+        });
+    }
+
+    delete(): Promise<HTTPResponse> {
+        return new Promise((resolve, reject) => {
+            this.requestResolve = resolve;
+            this.requestReject = reject;
+        });
+    }
 }
 
 describe('NativeHttpConnection', () => {
@@ -36,7 +57,9 @@ describe('NativeHttpConnection', () => {
     it('throws error on request is not GET or POST', () => {
         expect(() => {
             const request = new Request(new RequestOptions());
+            /* tslint:disable */
             new NativeHttpConnection(request, http);
+            /* tslint:enable */
         }).toThrow();
     });
 
@@ -121,14 +144,14 @@ describe('NativeHttpConnection', () => {
         connection.response.subscribe();
 
         expect(http.post).toHaveBeenCalledWith(null, {
-                a: 'b',
-                c: 'd'
-            },
-            {
-                'headerName1': 'headerValue1',
-                'headerName2': 'headerValue2'
+            a: 'b',
+            c: 'd'
+        },
+        {
+            'headerName1': 'headerValue1',
+            'headerName2': 'headerValue2'
 
-            });
+        });
     });
 
     it('converts HTTPResponse headers object to Headers', (done) => {
@@ -156,5 +179,22 @@ describe('NativeHttpConnection', () => {
                 'header2': 'value2'
             }
         });
+    });
+
+    it('should call postJson in case of post request and object as body', () => {
+        spyOn(http, 'postJson').and.returnValue(new Promise(() => {}));
+
+        const request = new Request(new RequestOptions({
+            method: RequestMethod.Post,
+            body: {a: 'b'},
+            headers: new Headers({
+                'headerName1': ['headerValue1']
+            })
+        }));
+
+        const connection = new NativeHttpConnection(request, http);
+        connection.response.subscribe();
+
+        expect(http.postJson).toHaveBeenCalledWith(null, {a: 'b'}, {headerName1: 'headerValue1'});
     });
 });
