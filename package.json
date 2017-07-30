@@ -29,8 +29,9 @@
   },
   "devDependencies": {
     "@angular/compiler": "^4.3.1",
+    "@angular/core": "^4.3.2",
     "@angular/http": "^4.3.1",
-    "@angular/platform-browser-dynamic": "^4.3.1",
+    "@angular/platform-browser-dynamic": "^4.3.2",
     "@ionic-native/core": "^4.1.0",
     "@types/jest": "^20.0.4",
     "commitizen": "^2.9.6",
