@@ -1,9 +1,16 @@
 import {
-    BaseResponseOptions, BrowserXhr, CookieXSRFStrategy, Request, RequestMethod, RequestOptions, XHRBackend
+    BaseResponseOptions, BrowserXhr, CookieXSRFStrategy, Request, RequestMethod, RequestOptions, XHRBackend,
+    XSRFStrategy
 } from '@angular/http';
 import { NativeHttpBackend, NativeHttpConnection } from './native-http-backend';
 import { HTTP } from './cordova-http-plugin';
 import { NativeHttpXhrFallback } from './native-http-xhr-fallback';
+
+class XSRFStrategyMock implements XSRFStrategy {
+
+    configureRequest(req: Request): void {
+    }
+}
 
 describe('NativeHttpXhrFallback', () => {
     let xhrFallback: NativeHttpXhrFallback;
@@ -12,7 +19,7 @@ describe('NativeHttpXhrFallback', () => {
 
     beforeEach(() => {
         nativeHttpBackend = new NativeHttpBackend(new HTTP(), new BaseResponseOptions());
-        xhrBackend = new XHRBackend(new BrowserXhr(), new BaseResponseOptions(), new CookieXSRFStrategy());
+        xhrBackend = new XHRBackend(new BrowserXhr(), new BaseResponseOptions(), new XSRFStrategyMock());
         xhrFallback = new NativeHttpXhrFallback(nativeHttpBackend, xhrBackend);
     });
 

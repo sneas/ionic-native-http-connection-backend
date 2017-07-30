@@ -28,10 +28,7 @@
     "@ionic-native/http": "^4.1.0"
   },
   "devDependencies": {
-    "@angular/compiler": "^4.3.1",
-    "@angular/core": "^4.3.2",
     "@angular/http": "^4.3.1",
-    "@angular/platform-browser-dynamic": "^4.3.2",
     "@ionic-native/core": "^4.1.0",
     "@types/jest": "^20.0.4",
     "commitizen": "^2.9.6",
@@ -52,12 +49,22 @@
     }
   },
   "jest": {
+    "transform": {
+      "^.+\\.(ts|js|html)$": "<rootDir>/node_modules/jest-preset-angular/preprocessor.js"
+    },
+    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|js)$",
+    "moduleFileExtensions": [
+      "ts",
+      "js",
+      "html",
+      "json"
+    ],
+    "mapCoverage": true,
     "globals": {
       "ts-jest": {
         "tsConfigFile": "tsconfig.json"
       }
     },
-    "preset": "jest-preset-angular",
     "setupTestFrameworkScriptFile": "<rootDir>/jest.init.ts",
     "transformIgnorePatterns": [
       "node_modules/(?!@ngrx|angular2-ui-switch|ng-dynamic|@ionic-native|lodash-es)"
