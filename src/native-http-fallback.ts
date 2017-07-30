@@ -1,32 +1,30 @@
-import { ConnectionBackend, Request, XHRBackend, Connection } from '@angular/http';
+import { ConnectionBackend, Request, Connection } from '@angular/http';
 import { Injectable } from '@angular/core';
 import { NativeHttpBackend } from './native-http-backend';
 import { checkAvailability } from '@ionic-native/core';
 
 @Injectable()
-export class NativeHttpXhrFallback implements ConnectionBackend {
+export class NativeHttpFallback implements ConnectionBackend {
 
     protected nativeIsForced: boolean | null = null;
     protected nativeIsAvailable: boolean | null = null;
 
     constructor(
         private nativeHttpBackend: NativeHttpBackend,
-        private xhrBackend: XHRBackend
+        private fallback: ConnectionBackend
     ) {
     }
 
     createConnection(request: Request): Connection {
         /**
          * Native HTTP Cordova plugin doesn't like local requests
-         *
-         * @type {boolean}
          */
         const isOutgoingRequest = /^(http|https):\/\//.test(request.url);
 
         if (isOutgoingRequest && this.isNativeHttpAvailable()) {
             return this.nativeHttpBackend.createConnection(request);
         } else {
-            return this.xhrBackend.createConnection(request);
+            return this.fallback.createConnection(request);
         }
     }
 

@@ -1,10 +1,12 @@
 import {
-    BaseResponseOptions, BrowserXhr, CookieXSRFStrategy, Request, RequestMethod, RequestOptions, XHRBackend,
+    BaseResponseOptions, BrowserXhr, ConnectionBackend, CookieXSRFStrategy, Request, RequestMethod, RequestOptions,
+    XHRBackend,
     XSRFStrategy
 } from '@angular/http';
 import { NativeHttpBackend, NativeHttpConnection } from './native-http-backend';
 import { HTTP } from './cordova-http-plugin';
-import { NativeHttpXhrFallback } from './native-http-xhr-fallback';
+import { NativeHttpFallback } from './native-http-fallback';
+import { MockBackend } from '@angular/http/testing';
 
 class XSRFStrategyMock implements XSRFStrategy {
 
@@ -12,20 +14,20 @@ class XSRFStrategyMock implements XSRFStrategy {
     }
 }
 
-describe('NativeHttpXhrFallback', () => {
-    let xhrFallback: NativeHttpXhrFallback;
-    let xhrBackend: XHRBackend;
+describe('NativeHttpFallback', () => {
+    let natviveHttpFallback: NativeHttpFallback;
+    let fallbackBackend: ConnectionBackend;
     let nativeHttpBackend: NativeHttpBackend;
 
     beforeEach(() => {
         nativeHttpBackend = new NativeHttpBackend(new HTTP(), new BaseResponseOptions());
-        xhrBackend = new XHRBackend(new BrowserXhr(), new BaseResponseOptions(), new XSRFStrategyMock());
-        xhrFallback = new NativeHttpXhrFallback(nativeHttpBackend, xhrBackend);
+        fallbackBackend = new MockBackend();
+        natviveHttpFallback = new NativeHttpFallback(nativeHttpBackend, fallbackBackend);
     });
 
     it('should return NativeHttpConnection in case of plugin exists and outgoing request', () => {
-        xhrFallback.forceNative(true);
-        const connection = xhrFallback.createConnection(new Request(new RequestOptions({
+        natviveHttpFallback.forceNative(true);
+        const connection = natviveHttpFallback.createConnection(new Request(new RequestOptions({
             url: 'http://google.com',
             method: RequestMethod.Post
         })));
@@ -33,8 +35,8 @@ describe('NativeHttpXhrFallback', () => {
     });
 
     it('should return fallback connection in case of plugin exists and local request', () => {
-        xhrFallback.forceNative(true);
-        const connection = xhrFallback.createConnection(new Request(new RequestOptions({
+        natviveHttpFallback.forceNative(true);
+        const connection = natviveHttpFallback.createConnection(new Request(new RequestOptions({
             url: '/api',
             method: RequestMethod.Post
         })));
@@ -42,8 +44,8 @@ describe('NativeHttpXhrFallback', () => {
     });
 
     it('should return fallback connection in case of plugin doesn\'t exist', () => {
-        xhrFallback.forceNative(false);
-        const connection = xhrFallback.createConnection(new Request(new RequestOptions({
+        natviveHttpFallback.forceNative(false);
+        const connection = natviveHttpFallback.createConnection(new Request(new RequestOptions({
             method: RequestMethod.Post
         })));
         expect(connection instanceof NativeHttpConnection).toBeFalsy();
