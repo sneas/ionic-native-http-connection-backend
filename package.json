@@ -24,15 +24,13 @@
     "url": "https://github.com/sneas/ionic-native-http-connection-backend/issues"
   },
   "homepage": "https://github.com/sneas/ionic-native-http-connection-backend#readme",
-  "dependencies": {
-    "@ionic-native/http": "^4.1.0"
-  },
   "devDependencies": {
     "@angular/common": "^4.3.2",
     "@angular/core": "^4.3.2",
     "@angular/http": "^4.3.2",
     "@angular/platform-browser": "^4.3.2",
     "@ionic-native/core": "^4.1.0",
+    "@ionic-native/http": "^4.1.0",
     "@types/jest": "^20.0.4",
     "commitizen": "^2.9.6",
     "core-js": "^2.4.1",
