@@ -28,14 +28,16 @@
     "@ionic-native/http": "^4.1.0"
   },
   "devDependencies": {
-    "@angular/http": "^4.3.1",
+    "@angular/common": "^4.3.2",
+    "@angular/core": "^4.3.2",
+    "@angular/http": "^4.3.2",
+    "@angular/platform-browser": "^4.3.2",
     "@ionic-native/core": "^4.1.0",
     "@types/jest": "^20.0.4",
     "commitizen": "^2.9.6",
     "core-js": "^2.4.1",
     "cz-conventional-changelog": "^2.0.0",
     "jest": "^20.0.4",
-    "jest-preset-angular": "^2.0.5",
     "lodash-es": "^4.17.4",
     "rxjs": "^5.4.2",
     "semantic-release": "^6.3.6",
@@ -50,7 +52,7 @@
   },
   "jest": {
     "transform": {
-      "^.+\\.(ts|js|html)$": "<rootDir>/node_modules/jest-preset-angular/preprocessor.js"
+      "^.+\\.(ts|js|html)$": "<rootDir>/node_modules/ts-jest/preprocessor.js"
     },
     "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|js)$",
     "moduleFileExtensions": [
