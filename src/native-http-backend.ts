@@ -5,7 +5,6 @@ import {
 } from '@angular/http';
 import { HTTPResponse } from '@ionic-native/http';
 import { Observer } from 'rxjs/Observer';
-import mapValues from 'lodash-es/mapValues';
 import {HTTP} from './cordova-http-plugin';
 
 type HTTPRequestMethod = 'get' | 'post' | 'postJson' | 'put' | 'delete';
@@ -36,8 +35,12 @@ export class NativeHttpConnection implements Connection {
         this.request = req;
         this.response = new Observable<Response>((responseObserver: Observer<Response>) => {
 
-            const headers = mapValues(req.headers.toJSON(), (headerValues: string[]) => {
-                return headerValues[0];
+            const headers = req.headers.toJSON();
+            Object.keys(headers).map(function(key) {
+                if (headers[key].length > 1) {
+                    throw `Header ${key} contains more than one value`
+                }
+                headers[key] = headers[key][0];
             });
 
             let body;

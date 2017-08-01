@@ -60,7 +60,7 @@ describe('NativeHttpConnection', () => {
             /* tslint:disable */
             new NativeHttpConnection(request, http);
             /* tslint:enable */
-        }).toThrow();
+        }).toThrow('Only GET, POST, PUT and DELETE methods are supported by the current Native HTTP version');
     });
 
     it('still works on errors with success status', (done: () => void) => {
@@ -197,4 +197,17 @@ describe('NativeHttpConnection', () => {
 
         expect(http.postJson).toHaveBeenCalledWith(null, {a: 'b'}, {headerName1: 'headerValue1'});
     });
+
+    it('should throw error if request header contains more than one value', () => {
+        expect(() => {
+            const request = new Request(new RequestOptions({
+                method: RequestMethod.Put,
+                headers: new Headers({
+                    'headerName1': ['headerValue1', 'headerValue2']
+                })
+            }));
+            const connection = new NativeHttpConnection(request, http);
+            connection.response.subscribe();
+        }).toThrow('Header headerName1 contains more than one value');
+    })
 });

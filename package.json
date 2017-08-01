@@ -2,11 +2,13 @@
   "name": "ionic-native-http-connection-backend",
   "version": "0.0.0-development",
   "description": "Solves CORS problem with Ionic 3 + WKWebView",
-  "main": "src/index.ts",
+  "module": "dist/index.js",
+  "typings": "dist/index.d.ts",
   "scripts": {
     "commit": "git-cz",
     "test": "jest",
-    "semantic-release": "semantic-release pre && npm publish && semantic-release post"
+    "semantic-release": "semantic-release pre && npm publish && semantic-release post",
+    "build": "rimraf dist && tsc -p tsconfig.build.json"
   },
   "repository": {
     "type": "git",
@@ -36,7 +38,7 @@
     "core-js": "^2.4.1",
     "cz-conventional-changelog": "^2.0.0",
     "jest": "^20.0.4",
-    "lodash-es": "^4.17.4",
+    "rimraf": "^2.6.1",
     "rxjs": "^5.4.2",
     "semantic-release": "^6.3.6",
     "ts-jest": "^20.0.7",
@@ -67,7 +69,7 @@
     },
     "setupTestFrameworkScriptFile": "<rootDir>/jest.init.ts",
     "transformIgnorePatterns": [
-      "node_modules/(?!@ngrx|angular2-ui-switch|ng-dynamic|@ionic-native|lodash-es)"
+      "node_modules/(?!@ionic-native)"
     ]
   }
 }
