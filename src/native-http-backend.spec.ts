@@ -1,6 +1,5 @@
 import {
-    Headers,
-    Request, RequestMethod, RequestOptions
+    Headers, Request, RequestMethod, RequestOptions, Response
 } from '@angular/http';
 import { HTTPResponse } from '@ionic-native/http';
 import { HTTPError, NativeHttpConnection } from './native-http-backend';
@@ -143,7 +142,7 @@ describe('NativeHttpConnection', () => {
         const connection = new NativeHttpConnection(request, http);
         connection.response.subscribe();
 
-        expect(http.post).toHaveBeenCalledWith(null, {
+        expect(http.post).toHaveBeenCalledWith(expect.anything(), {
             a: 'b',
             c: 'd'
         },
@@ -195,7 +194,7 @@ describe('NativeHttpConnection', () => {
         const connection = new NativeHttpConnection(request, http);
         connection.response.subscribe();
 
-        expect(http.postJson).toHaveBeenCalledWith(null, {a: 'b'}, {headerName1: 'headerValue1'});
+        expect(http.postJson).toHaveBeenCalledWith(expect.anything(), {a: 'b'}, {headerName1: 'headerValue1'});
     });
 
     it('should throw error if request header contains more than one value', () => {
@@ -209,5 +208,19 @@ describe('NativeHttpConnection', () => {
             const connection = new NativeHttpConnection(request, http);
             connection.response.subscribe();
         }).toThrow('Header headerName1 contains more than one value');
-    })
+    });
+
+    it('should encode URL', () => {
+        spyOn(http, 'get').and.returnValue(new Promise(() => {}));
+
+        const request = new Request(new RequestOptions({
+            method: RequestMethod.Get,
+            url: 'http://api.com/get something?with= wierd variables '
+        }));
+        const connection = new NativeHttpConnection(request, http);
+        connection.response.subscribe();
+        expect(http.get).toBeCalledWith(
+            'http://api.com/get%20something?with=%20wierd%20variables%20',
+            expect.anything(), expect.anything());
+    });
 });

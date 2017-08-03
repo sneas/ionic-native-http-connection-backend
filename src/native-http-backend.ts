@@ -54,7 +54,7 @@ export class NativeHttpConnection implements Connection {
 
             const requestMethod = this.detectRequestMethod(req);
 
-            nativeHttp[requestMethod](req.url, body, headers).then((response: HTTPResponse) => {
+            nativeHttp[requestMethod](encodeURI(req.url), body, headers).then((response: HTTPResponse) => {
                 this.fireResponse(responseObserver, new ResponseOptions({
                     body: response.data,
                     status: response.status,
