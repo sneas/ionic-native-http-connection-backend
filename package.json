@@ -1,7 +1,7 @@
 {
   "name": "ionic-native-http-connection-backend",
   "version": "0.0.0-development",
-  "description": "Solves CORS problem with Ionic 3 + WKWebView",
+  "description": "A solution to CORS problem with Ionic 3 and WKWebView",
   "module": "dist/index.js",
   "typings": "dist/index.d.ts",
   "scripts": {
