@@ -1,14 +1,25 @@
-
 {
   "compilerOptions": {
-    "target": "es6",
-    "noImplicitAny": false,
+    "module": "es2015",
+    "target": "es5",
+    "moduleResolution": "node",
     "sourceMap": true,
-    "allowJs": true,
+    "declaration": true,
+    "noImplicitAny": false,
     "experimentalDecorators": true,
-    "moduleResolution": "node"
+    "lib": ["dom", "es2015"],
+    "rootDir": "./src/",
+    "outDir": "./dist"
   },
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "dist",
+    "scripts"
+  ],
+  "angularCompilerOptions": {
+    "genDir": "aot"
+  },
+  "files": [
+    "./src/index.ts"
   ]
 }
