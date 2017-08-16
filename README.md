@@ -24,7 +24,7 @@ Add `NativeHttpModule` and `NativeHttpFallback` into your application's module
 ```typescript
 import { NgModule } from '@angular/core';
 import { NativeHttpFallback, NativeHttpModule } from 'ionic-native-http-connection-backend';
-import { BaseRequestOptions, Http } from '@angular/http';
+import { RequestOptions, Http } from '@angular/http';
 
 @NgModule({
     declarations: [],
@@ -34,7 +34,7 @@ import { BaseRequestOptions, Http } from '@angular/http';
     bootstrap: [],
     entryComponents: [],
     providers: [
-        {provide: Http, useClass: Http, deps: [NativeHttpFallback, BaseRequestOptions]}
+        {provide: Http, useClass: Http, deps: [NativeHttpFallback, RequestOptions]}
     ],
 })
 export class AppModule {
