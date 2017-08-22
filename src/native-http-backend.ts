@@ -54,7 +54,14 @@ export class NativeHttpConnection implements Connection {
 
             const requestMethod = this.detectRequestMethod(req);
 
-            nativeHttp[requestMethod](encodeURI(req.url), body, headers).then((response: HTTPResponse) => {
+            /**
+             * Request contains either encoded either decoded URL depended on the way
+             * parameters are passed to Http component. Even though XMLHttpRequest automatically
+             * converts unencoded URL, NativeHTTP requires it to be always encoded.
+             */
+            const url = encodeURI(decodeURI(req.url));
+
+            nativeHttp[requestMethod](url, body, headers).then((response: HTTPResponse) => {
                 this.fireResponse(responseObserver, new ResponseOptions({
                     body: response.data,
                     status: response.status,

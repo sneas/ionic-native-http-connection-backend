@@ -223,4 +223,18 @@ describe('NativeHttpConnection', () => {
             'http://api.com/get%20something?with=%20wierd%20variables%20',
             expect.anything(), expect.anything());
     });
+
+    it('should not encode already encoded URL', () => {
+        spyOn(http, 'get').and.returnValue(new Promise(() => {}));
+
+        const request = new Request(new RequestOptions({
+            method: RequestMethod.Get,
+            url: 'http://api.com/get%20something?with=%20wierd%20variables%20'
+        }));
+        const connection = new NativeHttpConnection(request, http);
+        connection.response.subscribe();
+        expect(http.get).toBeCalledWith(
+            'http://api.com/get%20something?with=%20wierd%20variables%20',
+            expect.anything(), expect.anything());
+    });
 });
