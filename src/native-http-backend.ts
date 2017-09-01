@@ -5,7 +5,7 @@ import {
 } from '@angular/http';
 import { HTTPResponse } from '@ionic-native/http';
 import { Observer } from 'rxjs/Observer';
-import {HTTP} from './cordova-http-plugin';
+import {HTTP2} from './cordova-http-plugin';
 
 type HTTPRequestMethod = 'get' | 'post' | 'postJson' | 'put' | 'delete';
 
@@ -20,7 +20,7 @@ export class NativeHttpConnection implements Connection {
     response: Observable<Response>;
     readyState: ReadyState;
 
-    constructor(req: Request, nativeHttp: HTTP, baseResponseOptions?: ResponseOptions) {
+    constructor(req: Request, nativeHttp: HTTP2, baseResponseOptions?: ResponseOptions) {
         const allowedRequestMethods = [
             RequestMethod.Get,
             RequestMethod.Post,
@@ -140,7 +140,7 @@ export class NativeHttpConnection implements Connection {
 @Injectable()
 export class NativeHttpBackend implements ConnectionBackend {
     constructor(
-        private nativeHttp: HTTP,
+        private nativeHttp: HTTP2,
         private baseResponseOptions: ResponseOptions
     ) {
     }

@@ -3,9 +3,9 @@ import {
 } from '@angular/http';
 import { HTTPResponse } from '@ionic-native/http';
 import { HTTPError, NativeHttpConnection } from './native-http-backend';
-import { HTTP } from './cordova-http-plugin';
+import { HTTP2 } from './cordova-http-plugin';
 
-class HTTPMock extends HTTP {
+class HTTPMock extends HTTP2 {
 
     requestResolve: (response: HTTPResponse) => void;
     requestReject: (error: HTTPError) => void;

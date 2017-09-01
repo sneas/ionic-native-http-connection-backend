@@ -2,7 +2,7 @@ import {
     BaseResponseOptions, ConnectionBackend, Request, RequestMethod, RequestOptions
 } from '@angular/http';
 import { NativeHttpBackend, NativeHttpConnection } from './native-http-backend';
-import { HTTP } from './cordova-http-plugin';
+import { HTTP2 } from './cordova-http-plugin';
 import { NativeHttpFallback } from './native-http-fallback';
 import { MockBackend } from '@angular/http/testing';
 
@@ -12,7 +12,7 @@ describe('NativeHttpFallback', () => {
     let nativeHttpBackend: NativeHttpBackend;
 
     beforeEach(() => {
-        nativeHttpBackend = new NativeHttpBackend(new HTTP(), new BaseResponseOptions());
+        nativeHttpBackend = new NativeHttpBackend(new HTTP2(), new BaseResponseOptions());
         fallbackBackend = new MockBackend();
         natviveHttpFallback = new NativeHttpFallback(nativeHttpBackend, fallbackBackend);
     });

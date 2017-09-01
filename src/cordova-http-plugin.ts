@@ -1,16 +1,16 @@
 import { Plugin, Cordova } from '@ionic-native/core';
-import { HTTP as NativeHTTP, HTTPResponse } from '@ionic-native/http';
+import { HTTP, HTTPResponse } from '@ionic-native/http';
 import { Injectable } from '@angular/core';
 
 @Plugin({
-    pluginName: 'HTTP',
-    plugin: 'cordova-plugin-http',
-    pluginRef: 'cordovaHTTP',
-    repo: 'https://github.com/wymsee/cordova-HTTP',
+    pluginName: 'HTTP2',
+    plugin: 'cordova-plugin-http2',
+    pluginRef: 'cordovaHTTP2',
+    repo: 'https://github.com/sneas/cordova-HTTP2',
     platforms: ['Android', 'iOS']
 })
 @Injectable()
-export class HTTP extends NativeHTTP {
+export class HTTP2 extends HTTP {
     /* tslint:disable */
     @Cordova()
     postJson(_url: string, _body: any, _headers: any): Promise<HTTPResponse> { return; }
