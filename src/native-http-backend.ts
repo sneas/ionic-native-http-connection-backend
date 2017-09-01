@@ -3,9 +3,8 @@ import { Observable } from 'rxjs/Observable';
 import {
     Connection, ConnectionBackend, Headers, ReadyState, Request, RequestMethod, Response, ResponseOptions
 } from '@angular/http';
-import { HTTPResponse } from '@ionic-native/http';
 import { Observer } from 'rxjs/Observer';
-import {HTTP2} from './cordova-http-plugin';
+import { HTTP2, HTTPResponse } from './cordova-http-plugin';
 
 type HTTPRequestMethod = 'get' | 'post' | 'postJson' | 'put' | 'delete';
 
