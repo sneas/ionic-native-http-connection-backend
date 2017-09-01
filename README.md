@@ -14,7 +14,7 @@ This project's been born as a solution to CORS problem allowing to use Angular `
 
 ```bash
 npm install ionic-native-http-connection-backend --save
-ionic cordova plugin add https://github.com/sneas/cordova-HTTP
+ionic cordova plugin add cordova-plugin-http2
 ```
 
 ## Usage

@@ -43,7 +43,7 @@ export class NativeHttpFallback implements ConnectionBackend {
         }
 
         if (this.nativeIsAvailable === null) {
-            this.nativeIsAvailable = checkAvailability('cordovaHTTP') === true;
+            this.nativeIsAvailable = checkAvailability('cordovaHTTP2') === true;
         }
 
         return this.nativeIsAvailable;

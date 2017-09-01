@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { HttpModule, XHRBackend } from '@angular/http';
-import { HTTP } from './cordova-http-plugin';
+import { HTTP2 } from './cordova-http-plugin';
 import { NativeHttpBackend } from './native-http-backend';
 import { NativeHttpFallback } from './native-http-fallback';
 
@@ -9,7 +9,7 @@ import { NativeHttpFallback } from './native-http-fallback';
         HttpModule
     ],
     providers: [
-        HTTP,
+        HTTP2,
         NativeHttpBackend,
         { provide: NativeHttpFallback, useClass: NativeHttpFallback, deps: [NativeHttpBackend, XHRBackend] },
     ]
