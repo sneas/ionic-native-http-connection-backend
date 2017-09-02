@@ -1,4 +1,4 @@
-# A solution to CORS problem with Ionic 3 and WKWebView
+# A solution to CORS problem of Ionic and WKWebView
 
 [![travis build](https://img.shields.io/travis/sneas/ionic-native-http-connection-backend.svg?style=flat-square&maxAge=2592000)](https://travis-ci.org/sneas/ionic-native-http-connection-backend)
 [![version](https://img.shields.io/npm/v/ionic-native-http-connection-backend.svg?style=flat-square)](http://npm.im/ionic-native-http-connection-backend)
