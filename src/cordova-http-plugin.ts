@@ -84,6 +84,12 @@ export class HTTP2 extends IonicNativePlugin {
     @Cordova({ sync: true })
     useBasicAuth(username: string, password: string): void { }
 
+    @Cordova()
+    setX509AuthClientCredentials(pkcs10Container: ArrayBuffer, password?: ArrayBuffer): void{ return; }
+
+    @Cordova()
+    resetX509AuthClientCredentials(): void{ return; }
+
     /**
      * Set a header for all future requests. Takes a header and a value.
      * @param header {string} The name of the header
