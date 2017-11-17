@@ -2,9 +2,9 @@ import {
     Headers, Request, RequestMethod, RequestOptions, Response
 } from '@angular/http';
 import { HTTPError, NativeHttpConnection } from './native-http-backend';
-import { HTTP2, HTTPResponse } from './cordova-http-plugin';
+import { HTTP, HTTPResponse } from '@ionic-native/http';
 
-class HTTPMock extends HTTP2 {
+class HTTPMock extends HTTP {
 
     requestResolve: (response: HTTPResponse) => void;
     requestReject: (error: HTTPError) => void;
@@ -17,13 +17,6 @@ class HTTPMock extends HTTP2 {
     }
 
     get(): Promise<HTTPResponse> {
-        return new Promise((resolve, reject) => {
-            this.requestResolve = resolve;
-            this.requestReject = reject;
-        });
-    }
-
-    postJson(): Promise<HTTPResponse> {
         return new Promise((resolve, reject) => {
             this.requestResolve = resolve;
             this.requestReject = reject;
@@ -43,6 +36,20 @@ class HTTPMock extends HTTP2 {
             this.requestReject = reject;
         });
     }
+
+    patch(): Promise<HTTPResponse> {
+        return new Promise((resolve, reject) => {
+            this.requestResolve = resolve;
+            this.requestReject = reject;
+        });
+    }
+
+    head(): Promise<HTTPResponse> {
+        return new Promise((resolve, reject) => {
+            this.requestResolve = resolve;
+            this.requestReject = reject;
+        });
+    }
 }
 
 describe('NativeHttpConnection', () => {
@@ -52,13 +59,15 @@ describe('NativeHttpConnection', () => {
         http = new HTTPMock();
     });
 
-    it('throws error on request is not GET or POST', () => {
+    it('throws error on unsupported request method', () => {
         expect(() => {
-            const request = new Request(new RequestOptions());
+            const request = new Request(new RequestOptions({
+                method: RequestMethod.Options
+            }));
             /* tslint:disable */
             new NativeHttpConnection(request, http);
             /* tslint:enable */
-        }).toThrow('Only GET, POST, PUT and DELETE methods are supported by the current Native HTTP version');
+        }).toThrow('Only GET, POST, PUT, PATCH, DELETE and HEAD methods are supported by the current Native HTTP version');
     });
 
     it('still works on errors with success status', (done: () => void) => {
@@ -179,8 +188,8 @@ describe('NativeHttpConnection', () => {
         });
     });
 
-    it('should call postJson in case of post request and object as body', () => {
-        spyOn(http, 'postJson').and.returnValue(new Promise(() => {}));
+    it('should set json serializer when post json request', () => {
+        spyOn(http, 'setDataSerializer');
 
         const request = new Request(new RequestOptions({
             method: RequestMethod.Post,
@@ -193,7 +202,24 @@ describe('NativeHttpConnection', () => {
         const connection = new NativeHttpConnection(request, http);
         connection.response.subscribe();
 
-        expect(http.postJson).toHaveBeenCalledWith(expect.anything(), {a: 'b'}, {headerName1: 'headerValue1'});
+        expect(http.setDataSerializer).toHaveBeenCalledWith('json');
+    });
+
+    it('should set json serializer when put json request', () => {
+        spyOn(http, 'setDataSerializer');
+
+        const request = new Request(new RequestOptions({
+            method: RequestMethod.Put,
+            body: {a: 'b'},
+            headers: new Headers({
+                'headerName1': ['headerValue1']
+            })
+        }));
+
+        const connection = new NativeHttpConnection(request, http);
+        connection.response.subscribe();
+
+        expect(http.setDataSerializer).toHaveBeenCalledWith('json');
     });
 
     it('should throw error if request header contains more than one value', () => {
