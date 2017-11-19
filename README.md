@@ -12,8 +12,8 @@ This project's been born as a solution to CORS problem allowing to use Angular `
 ## Installation
 
 ```bash
-npm install ionic-native-http-connection-backend --save
-ionic cordova plugin add cordova-plugin-http2
+npm install --save @ionic-native/http ionic-native-http-connection-backend
+ionic cordova plugin add cordova-plugin-advanced-http
 ```
 
 ## Usage
@@ -42,8 +42,7 @@ export class AppModule {
 
 ## Known issues
 
-* HTTP method `PATCH` is not supported
-* `Response.url` is missing due to limitation of `cordova-HTTP` plugin
+* `Response.url` is missing due to limitation of `cordova-plugin-advanced-http` plugin
 
 ## Troubleshooting
 
@@ -58,7 +57,7 @@ this.platform.ready().then(() => {
 });
 ```
 
-`ionic-native-http-connection-backend` uses `cordova-plugin-http2` to perform HTTP requests. There is a chance plugin could be initialized in few seconds after app has started. Using `ionic-native-http-connection-backend` before `cordova-plugin-http2` has been initialized falls it back to `XmlHttpRequest` usage.
+`ionic-native-http-connection-backend` uses `cordova-plugin-advanced-http` to perform HTTP requests. There is a chance plugin could be initialized in few seconds after app has started. Using `ionic-native-http-connection-backend` before `cordova-plugin-advanced-http` has been initialized falls it back to `XmlHttpRequest` usage.
 
 The above instruction relates to requests performed on app start only. There is no need to wrap all the HTTP requests with `Platform.ready`.
 
