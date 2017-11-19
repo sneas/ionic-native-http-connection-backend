@@ -4,9 +4,11 @@ import {
     Connection, ConnectionBackend, Headers, ReadyState, Request, RequestMethod, Response, ResponseOptions
 } from '@angular/http';
 import { Observer } from 'rxjs/Observer';
-import { HTTP2, HTTPResponse } from './cordova-http-plugin';
+import { HTTP, HTTPResponse } from '@ionic-native/http';
 
-type HTTPRequestMethod = 'get' | 'post' | 'postJson' | 'put' | 'delete';
+type HTTPRequestMethod = 'get' | 'post' | 'post' | 'put' | 'delete' | 'patch' | 'head';
+
+type DataSerializerType = 'json' | 'urlencoded';
 
 export interface HTTPError {
     error: string;
@@ -19,16 +21,18 @@ export class NativeHttpConnection implements Connection {
     response: Observable<Response>;
     readyState: ReadyState;
 
-    constructor(req: Request, nativeHttp: HTTP2, baseResponseOptions?: ResponseOptions) {
+    constructor(req: Request, nativeHttp: HTTP, baseResponseOptions?: ResponseOptions) {
         const allowedRequestMethods = [
             RequestMethod.Get,
             RequestMethod.Post,
             RequestMethod.Put,
-            RequestMethod.Delete
+            RequestMethod.Delete,
+            RequestMethod.Patch,
+            RequestMethod.Head,
         ];
 
         if (allowedRequestMethods.indexOf(req.method) === -1) {
-            throw 'Only GET, POST, PUT and DELETE methods are supported by the current Native HTTP version';
+            throw 'Only GET, POST, PUT, PATCH, DELETE and HEAD methods are supported by the current Native HTTP version';
         }
 
         this.request = req;
@@ -44,7 +48,7 @@ export class NativeHttpConnection implements Connection {
 
             let body;
 
-            // 1 stands for ContentType.JSON. Stupid Angular doesn't export ContentType
+            // 1 stands for ContentType.JSON. Angular doesn't export ContentType
             if (req.detectContentTypeFromBody() === 1) {
                 body = req.json();
             } else {
@@ -59,6 +63,8 @@ export class NativeHttpConnection implements Connection {
              * converts unencoded URL, NativeHTTP requires it to be always encoded.
              */
             const url = encodeURI(decodeURI(req.url));
+
+            nativeHttp.setDataSerializer(this.detectDataSerializerType(req));
 
             nativeHttp[requestMethod](url, body, headers).then((response: HTTPResponse) => {
                 this.fireResponse(responseObserver, new ResponseOptions({
@@ -76,32 +82,37 @@ export class NativeHttpConnection implements Connection {
         });
     }
 
-    private detectRequestMethod(req: Request) {
-        let requestMethod: HTTPRequestMethod;
-
+    private detectRequestMethod(req: Request): HTTPRequestMethod {
         switch (req.method) {
             case RequestMethod.Post:
-                requestMethod = 'post';
-                break;
+                return 'post';
 
             case RequestMethod.Put:
-                requestMethod = 'put';
-                break;
+                return 'put';
 
             case RequestMethod.Delete:
-                requestMethod = 'delete';
-                break;
+                return 'delete';
+
+            case RequestMethod.Patch:
+                return 'patch';
+
+            case RequestMethod.Head:
+                return 'head';
 
             default:
-                requestMethod = 'get';
+                return 'get';
+        }
+    }
+
+    private detectDataSerializerType(req: Request): DataSerializerType {
+        if (req.method === RequestMethod.Post || req.method === RequestMethod.Put) {
+            // 1 stands for ContentType.JSON. Angular doesn't export ContentType
+            if (req.detectContentTypeFromBody() === 1) {
+                return 'json'
+            }
         }
 
-        // 1 stands for ContentType.JSON. Stupid Angular doesn't export ContentType
-        if (req.detectContentTypeFromBody() === 1 && requestMethod === 'post') {
-            requestMethod = 'postJson';
-        }
-
-        return requestMethod;
+        return 'urlencoded';
     }
 
     private fireResponse(responseObserver: Observer<Response>, responseOptions: ResponseOptions,
@@ -139,7 +150,7 @@ export class NativeHttpConnection implements Connection {
 @Injectable()
 export class NativeHttpBackend implements ConnectionBackend {
     constructor(
-        private nativeHttp: HTTP2,
+        private nativeHttp: HTTP,
         private baseResponseOptions: ResponseOptions
     ) {
     }
