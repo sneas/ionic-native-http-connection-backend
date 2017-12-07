@@ -1,16 +1,19 @@
 import { ConnectionBackend, Request, Connection } from '@angular/http';
 import { Injectable } from '@angular/core';
-import { NativeHttpBackend } from './native-http-backend';
+import { NativeHttpBackendD } from './native-http-backend';
 import { checkAvailability } from '@ionic-native/core';
 
+/**
+ * @deprecated and will be gone. Use NativeHttpFallback instead
+ */
 @Injectable()
-export class NativeHttpFallback implements ConnectionBackend {
+export class NativeHttpFallbackD implements ConnectionBackend {
 
     protected nativeIsForced: boolean | null = null;
     protected nativeIsAvailable: boolean | null = null;
 
     constructor(
-        private nativeHttpBackend: NativeHttpBackend,
+        private nativeHttpBackend: NativeHttpBackendD,
         private fallback: ConnectionBackend
     ) {
     }

@@ -1,7 +1,7 @@
 import {
     Headers, Request, RequestMethod, RequestOptions, Response
 } from '@angular/http';
-import { HTTPError, NativeHttpConnection } from './native-http-backend';
+import { HTTPError, NativeHttpConnectionD } from './native-http-backend';
 import { HTTP, HTTPResponse } from '@ionic-native/http';
 
 class HTTPMock extends HTTP {
@@ -52,7 +52,7 @@ class HTTPMock extends HTTP {
     }
 }
 
-describe('NativeHttpConnection', () => {
+describe('NativeHttpConnectionD', () => {
     let http: HTTPMock;
 
     beforeEach(() => {
@@ -65,7 +65,7 @@ describe('NativeHttpConnection', () => {
                 method: RequestMethod.Options
             }));
             /* tslint:disable */
-            new NativeHttpConnection(request, http);
+            new NativeHttpConnectionD(request, http);
             /* tslint:enable */
         }).toThrow('Only GET, POST, PUT, PATCH, DELETE and HEAD methods are supported by the current Native HTTP version');
     });
@@ -75,7 +75,7 @@ describe('NativeHttpConnection', () => {
             method: RequestMethod.Post
         }));
 
-        const connection = new NativeHttpConnection(request, http);
+        const connection = new NativeHttpConnectionD(request, http);
 
         connection.response.subscribe((result) => {
             expect(result.ok).toBeTruthy();
@@ -93,7 +93,7 @@ describe('NativeHttpConnection', () => {
             method: RequestMethod.Post
         }));
 
-        const connection = new NativeHttpConnection(request, http);
+        const connection = new NativeHttpConnectionD(request, http);
 
         connection.response.subscribe(
             () => {
@@ -117,7 +117,7 @@ describe('NativeHttpConnection', () => {
             method: RequestMethod.Post
         }));
 
-        const connection = new NativeHttpConnection(request, http);
+        const connection = new NativeHttpConnectionD(request, http);
 
         connection.response.subscribe(
             () => {
@@ -147,7 +147,7 @@ describe('NativeHttpConnection', () => {
 
         spyOn(http, 'post').and.returnValue(new Promise(() => {}));
 
-        const connection = new NativeHttpConnection(request, http);
+        const connection = new NativeHttpConnectionD(request, http);
         connection.response.subscribe();
 
         expect(http.post).toHaveBeenCalledWith(expect.anything(), {
@@ -166,7 +166,7 @@ describe('NativeHttpConnection', () => {
             method: RequestMethod.Post
         }));
 
-        const connection = new NativeHttpConnection(request, http);
+        const connection = new NativeHttpConnectionD(request, http);
 
         connection.response.subscribe(
             (response) => {
@@ -199,7 +199,7 @@ describe('NativeHttpConnection', () => {
             })
         }));
 
-        const connection = new NativeHttpConnection(request, http);
+        const connection = new NativeHttpConnectionD(request, http);
         connection.response.subscribe();
 
         expect(http.setDataSerializer).toHaveBeenCalledWith('json');
@@ -216,7 +216,7 @@ describe('NativeHttpConnection', () => {
             })
         }));
 
-        const connection = new NativeHttpConnection(request, http);
+        const connection = new NativeHttpConnectionD(request, http);
         connection.response.subscribe();
 
         expect(http.setDataSerializer).toHaveBeenCalledWith('json');
@@ -230,7 +230,7 @@ describe('NativeHttpConnection', () => {
                     'headerName1': ['headerValue1', 'headerValue2']
                 })
             }));
-            const connection = new NativeHttpConnection(request, http);
+            const connection = new NativeHttpConnectionD(request, http);
             connection.response.subscribe();
         }).toThrow('Header headerName1 contains more than one value');
     });
@@ -242,7 +242,7 @@ describe('NativeHttpConnection', () => {
             method: RequestMethod.Get,
             url: 'http://api.com/get something?with= wierd variables '
         }));
-        const connection = new NativeHttpConnection(request, http);
+        const connection = new NativeHttpConnectionD(request, http);
         connection.response.subscribe();
         expect(http.get).toBeCalledWith(
             'http://api.com/get%20something?with=%20wierd%20variables%20',
@@ -256,7 +256,7 @@ describe('NativeHttpConnection', () => {
             method: RequestMethod.Get,
             url: 'http://api.com/get%20something?with=%20wierd%20variables%20'
         }));
-        const connection = new NativeHttpConnection(request, http);
+        const connection = new NativeHttpConnectionD(request, http);
         connection.response.subscribe();
         expect(http.get).toBeCalledWith(
             'http://api.com/get%20something?with=%20wierd%20variables%20',

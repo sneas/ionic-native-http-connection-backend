@@ -16,7 +16,10 @@ export interface HTTPError {
     headers?: {[name: string]: string};
 }
 
-export class NativeHttpConnection implements Connection {
+/**
+ * @deprecated and will be gone
+ */
+export class NativeHttpConnectionD implements Connection {
     request: Request;
     response: Observable<Response>;
     readyState: ReadyState;
@@ -147,8 +150,11 @@ export class NativeHttpConnection implements Connection {
     }
 }
 
+/**
+ * @deprecated and will be gone. Use NativeHttpBackend instead
+ */
 @Injectable()
-export class NativeHttpBackend implements ConnectionBackend {
+export class NativeHttpBackendD implements ConnectionBackend {
     constructor(
         private nativeHttp: HTTP,
         private baseResponseOptions: ResponseOptions
@@ -156,6 +162,6 @@ export class NativeHttpBackend implements ConnectionBackend {
     }
 
     createConnection(request: Request): Connection {
-        return new NativeHttpConnection(request, this.nativeHttp, this.baseResponseOptions);
+        return new NativeHttpConnectionD(request, this.nativeHttp, this.baseResponseOptions);
     }
 }

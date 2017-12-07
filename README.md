@@ -18,7 +18,7 @@ ionic cordova plugin add cordova-plugin-advanced-http
 
 ## Usage
 
-Add `NativeHttpModule` and `NativeHttpFallback` into your application's module
+Add `NativeHttpModuleD` and `NativeHttpFallbackD` into your application's module
 
 ```typescript
 import { NgModule } from '@angular/core';

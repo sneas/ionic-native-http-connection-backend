@@ -1,29 +1,29 @@
 import {
     BaseResponseOptions, ConnectionBackend, Request, RequestMethod, RequestOptions
 } from '@angular/http';
-import { NativeHttpBackend, NativeHttpConnection } from './native-http-backend';
+import { NativeHttpBackendD, NativeHttpConnectionD } from './native-http-backend';
 import { HTTP } from '@ionic-native/http';
-import { NativeHttpFallback } from './native-http-fallback';
+import { NativeHttpFallbackD } from './native-http-fallback';
 import { MockBackend } from '@angular/http/testing';
 
-describe('NativeHttpFallback', () => {
-    let nativeHttpFallback: NativeHttpFallback;
+describe('NativeHttpFallbackD', () => {
+    let nativeHttpFallback: NativeHttpFallbackD;
     let fallbackBackend: ConnectionBackend;
-    let nativeHttpBackend: NativeHttpBackend;
+    let nativeHttpBackend: NativeHttpBackendD;
 
     beforeEach(() => {
-        nativeHttpBackend = new NativeHttpBackend(new HTTP(), new BaseResponseOptions());
+        nativeHttpBackend = new NativeHttpBackendD(new HTTP(), new BaseResponseOptions());
         fallbackBackend = new MockBackend();
-        nativeHttpFallback = new NativeHttpFallback(nativeHttpBackend, fallbackBackend);
+        nativeHttpFallback = new NativeHttpFallbackD(nativeHttpBackend, fallbackBackend);
     });
 
-    it('should return NativeHttpConnection in case of plugin exists and outgoing request', () => {
+    it('should return NativeHttpConnectionD in case of plugin exists and outgoing request', () => {
         nativeHttpFallback.forceNative(true);
         const connection = nativeHttpFallback.createConnection(new Request(new RequestOptions({
             url: 'http://google.com',
             method: RequestMethod.Post
         })));
-        expect(connection instanceof NativeHttpConnection).toBeTruthy();
+        expect(connection instanceof NativeHttpConnectionD).toBeTruthy();
     });
 
     it('should return fallback connection in case of plugin exists and local request', () => {
@@ -32,7 +32,7 @@ describe('NativeHttpFallback', () => {
             url: '/api',
             method: RequestMethod.Post
         })));
-        expect(connection instanceof NativeHttpConnection).toBeFalsy();
+        expect(connection instanceof NativeHttpConnectionD).toBeFalsy();
     });
 
     it('should return fallback connection in case of plugin doesn\'t exist', () => {
@@ -40,6 +40,6 @@ describe('NativeHttpFallback', () => {
         const connection = nativeHttpFallback.createConnection(new Request(new RequestOptions({
             method: RequestMethod.Post
         })));
-        expect(connection instanceof NativeHttpConnection).toBeFalsy();
+        expect(connection instanceof NativeHttpConnectionD).toBeFalsy();
     });
 });
