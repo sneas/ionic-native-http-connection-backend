@@ -6,7 +6,7 @@
 
 ## Motivation
 
-Even though there is a way to solve CORS issue without changing server's response header by using [Cordova HTTP plugin](https://ionicframework.com/docs/native/http/), the problem is it works only on device and doesn't provide all the power of Angular's `Http` service.
+Even though there is a way to solve CORS issue without changing server's response header by using [Cordova HTTP plugin](https://ionicframework.com/docs/native/http/), the problem is it works only on device and doesn't provide all the power of Angular's `Http` and `HttpClient` services.
 
 This project's been born as a solution to CORS problem allowing to use Angular's `Http` and `HttpClient` services in both environments: browser and device.
 
