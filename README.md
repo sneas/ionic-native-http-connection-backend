@@ -22,18 +22,18 @@ Add `NativeHttpModuleD` and `NativeHttpFallbackD` into your application's module
 
 ```typescript
 import { NgModule } from '@angular/core';
-import { NativeHttpFallback, NativeHttpModule } from 'ionic-native-http-connection-backend';
+import { NativeHttpFallbackD, NativeHttpModuleD } from 'ionic-native-http-connection-backend';
 import { RequestOptions, Http } from '@angular/http';
 
 @NgModule({
     declarations: [],
     imports: [
-        NativeHttpModule
+        NativeHttpModuleD
     ],
     bootstrap: [],
     entryComponents: [],
     providers: [
-        {provide: Http, useClass: Http, deps: [NativeHttpFallback, RequestOptions]}
+        {provide: Http, useClass: Http, deps: [NativeHttpFallbackD, RequestOptions]}
     ],
 })
 export class AppModule {
