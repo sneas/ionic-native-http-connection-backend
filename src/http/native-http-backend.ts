@@ -5,16 +5,11 @@ import {
 } from '@angular/http';
 import { Observer } from 'rxjs/Observer';
 import { HTTP, HTTPResponse } from '@ionic-native/http';
+import { HTTPError } from '../http-error';
 
 type HTTPRequestMethod = 'get' | 'post' | 'post' | 'put' | 'delete' | 'patch' | 'head';
 
 type DataSerializerType = 'json' | 'urlencoded';
-
-export interface HTTPError {
-    error: string;
-    status?: number;
-    headers?: {[name: string]: string};
-}
 
 /**
  * @deprecated and will be gone

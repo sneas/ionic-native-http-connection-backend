@@ -7,7 +7,7 @@
     "declaration": true,
     "noImplicitAny": false,
     "experimentalDecorators": true,
-    "lib": ["dom", "es2015"],
+    "lib": ["dom", "es2015", "es7"],
     "rootDir": "./src/",
     "outDir": "./dist"
   },

@@ -1,56 +1,8 @@
 import {
     Headers, Request, RequestMethod, RequestOptions, Response
 } from '@angular/http';
-import { HTTPError, NativeHttpConnectionD } from './native-http-backend';
-import { HTTP, HTTPResponse } from '@ionic-native/http';
-
-class HTTPMock extends HTTP {
-
-    requestResolve: (response: HTTPResponse) => void;
-    requestReject: (error: HTTPError) => void;
-
-    post(): Promise<HTTPResponse> {
-        return new Promise((resolve, reject) => {
-            this.requestResolve = resolve;
-            this.requestReject = reject;
-        });
-    }
-
-    get(): Promise<HTTPResponse> {
-        return new Promise((resolve, reject) => {
-            this.requestResolve = resolve;
-            this.requestReject = reject;
-        });
-    }
-
-    put(): Promise<HTTPResponse> {
-        return new Promise((resolve, reject) => {
-            this.requestResolve = resolve;
-            this.requestReject = reject;
-        });
-    }
-
-    delete(): Promise<HTTPResponse> {
-        return new Promise((resolve, reject) => {
-            this.requestResolve = resolve;
-            this.requestReject = reject;
-        });
-    }
-
-    patch(): Promise<HTTPResponse> {
-        return new Promise((resolve, reject) => {
-            this.requestResolve = resolve;
-            this.requestReject = reject;
-        });
-    }
-
-    head(): Promise<HTTPResponse> {
-        return new Promise((resolve, reject) => {
-            this.requestResolve = resolve;
-            this.requestReject = reject;
-        });
-    }
-}
+import { NativeHttpConnectionD } from './native-http-backend';
+import { HTTPMock } from '../http.mock';
 
 describe('NativeHttpConnectionD', () => {
     let http: HTTPMock;
