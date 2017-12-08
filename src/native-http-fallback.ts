@@ -24,7 +24,7 @@ export class NativeHttpFallback implements HttpBackend {
                  */
                 const isExternalRequest = checkExternalRequest(req);
 
-                if (isExternalRequest && checkAvailability('cordovaHTTP2') === true) {
+                if (isExternalRequest && checkAvailability('cordova.plugin.http') === true) {
                     return this.cordovaHttpBackend.handle(req);
                 } else {
                     return this.fallbackBackend.handle(req);
