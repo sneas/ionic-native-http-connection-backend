@@ -127,7 +127,7 @@ export class NativeHttpBackend implements HttpBackend {
         });
     }
 
-    private detectDataSerializerType(req: Request): DataSerializerType {
+    private detectDataSerializerType(req: HttpRequest<any>): DataSerializerType {
         if (req.method.toLowerCase() === 'post' || req.method.toLowerCase() === 'put') {
             // 1 stands for ContentType.JSON. Angular doesn't export ContentType
             if (typeof req.body !== 'string') {
