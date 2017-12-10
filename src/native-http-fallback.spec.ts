@@ -1,45 +1,62 @@
-import {
-    BaseResponseOptions, ConnectionBackend, Request, RequestMethod, RequestOptions
-} from '@angular/http';
-import { NativeHttpBackend, NativeHttpConnection } from './native-http-backend';
-import { HTTP } from '@ionic-native/http';
+import { NativeHttpBackend } from './native-http-backend';
+import { HttpBackend, HttpEvent, HttpRequest, HttpResponse } from '@angular/common/http';
+import { Platform } from 'ionic-angular';
 import { NativeHttpFallback } from './native-http-fallback';
-import { MockBackend } from '@angular/http/testing';
+import { HTTP } from '@ionic-native/http';
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/of';
+import { checkAvailability } from '@ionic-native/core';
+import Mock = jest.Mock;
+
+jest.mock('@ionic-native/core');
+
+class MockHttpBackend extends HttpBackend {
+    handle(req: HttpRequest<any>): Observable<HttpEvent<any>> {
+        return Observable.of(new HttpResponse());
+    }
+}
 
 describe('NativeHttpFallback', () => {
-    let nativeHttpFallback: NativeHttpFallback;
-    let fallbackBackend: ConnectionBackend;
-    let nativeHttpBackend: NativeHttpBackend;
+    let platform: Platform;
+    let cordovaHttpBackend: NativeHttpBackend;
+    let fallbackBackend: HttpBackend;
+    let cordovaHttpFallback: NativeHttpFallback;
 
     beforeEach(() => {
-        nativeHttpBackend = new NativeHttpBackend(new HTTP(), new BaseResponseOptions());
-        fallbackBackend = new MockBackend();
-        nativeHttpFallback = new NativeHttpFallback(nativeHttpBackend, fallbackBackend);
+        platform = new Platform();
+        platform.ready = jest.fn().mockReturnValue(Promise.resolve());
+        cordovaHttpBackend = new NativeHttpBackend(new HTTP);
+        fallbackBackend = new MockHttpBackend();
+        cordovaHttpFallback = new NativeHttpFallback(platform, cordovaHttpBackend, fallbackBackend);
     });
 
-    it('should return NativeHttpConnection in case of plugin exists and outgoing request', () => {
-        nativeHttpFallback.forceNative(true);
-        const connection = nativeHttpFallback.createConnection(new Request(new RequestOptions({
-            url: 'http://google.com',
-            method: RequestMethod.Post
-        })));
-        expect(connection instanceof NativeHttpConnection).toBeTruthy();
+    it ('should handle request with cordova backend in case of external request and plugin availability', (done) => {
+        (checkAvailability as Mock<() => boolean>).mockImplementation(() => true);
+        spyOn(cordovaHttpBackend, 'handle').and.returnValue(Observable.of(new HttpResponse()));
+        const request = new HttpRequest('GET', 'http://some-url');
+        cordovaHttpFallback.handle(request).subscribe(() => {
+            expect(cordovaHttpBackend.handle).toHaveBeenCalledWith(request);
+            done();
+        });
     });
 
-    it('should return fallback connection in case of plugin exists and local request', () => {
-        nativeHttpFallback.forceNative(true);
-        const connection = nativeHttpFallback.createConnection(new Request(new RequestOptions({
-            url: '/api',
-            method: RequestMethod.Post
-        })));
-        expect(connection instanceof NativeHttpConnection).toBeFalsy();
+    it ('should handle request with fallback backend in case of internal request and plugin availability', (done) => {
+        (checkAvailability as Mock<() => boolean>).mockImplementation(() => true);
+        spyOn(fallbackBackend, 'handle').and.callThrough();
+        const request = new HttpRequest('GET', '/some-url');
+        cordovaHttpFallback.handle(request).subscribe(() => {
+            expect(fallbackBackend.handle).toHaveBeenCalledWith(request);
+            done();
+        });
     });
 
-    it('should return fallback connection in case of plugin doesn\'t exist', () => {
-        nativeHttpFallback.forceNative(false);
-        const connection = nativeHttpFallback.createConnection(new Request(new RequestOptions({
-            method: RequestMethod.Post
-        })));
-        expect(connection instanceof NativeHttpConnection).toBeFalsy();
+    it ('should handle request with fallback backend in case of plugin unavailability', (done) => {
+        (checkAvailability as Mock<() => boolean>).mockImplementation(() => false);
+        spyOn(fallbackBackend, 'handle').and.callThrough();
+        const request = new HttpRequest('GET', 'http://some-url');
+        cordovaHttpFallback.handle(request).subscribe(() => {
+            expect(fallbackBackend.handle).toHaveBeenCalledWith(request);
+            done();
+        });
     });
 });
