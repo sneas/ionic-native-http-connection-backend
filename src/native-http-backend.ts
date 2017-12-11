@@ -59,8 +59,6 @@ export class NativeHttpBackend implements HttpBackend {
 
             const fireResponse = (response: {body: string, status: number, headers: any}) => {
 
-				console.warn('********')
-				console.warn(req.responseType)
 
                 // ok determines whether the response will be transmitted on the event or
                 // error channel. Unsuccessful status codes (not 2xx) will always be errors,
@@ -90,7 +88,11 @@ export class NativeHttpBackend implements HttpBackend {
                         // Cannot be certain that the body was meant to be parsed as JSON.
                         // Leave the body as a string.
                     }
-                }
+				}
+				
+				if (req.responseType !== 'json'){
+					body = response.body.toString();
+				}
 
                 if (ok) {
                     // A successful response is delivered on the event stream.
