@@ -67,6 +67,10 @@ export class AppModule {
 }
 ```
 
+## Contributing
+
+Contributing guidelines could be found in [CONTRIBUTING.md](CONTRIBUTING.md)
+
 ## Troubleshooting
 
 ### (HttpModule, Angular < 4.3) I followed the installation and usage instructions but still receive CORS issue on app start
