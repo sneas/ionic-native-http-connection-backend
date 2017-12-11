@@ -8,7 +8,8 @@
     "commit": "git-cz",
     "test": "jest",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post",
-    "build": "rimraf aot dist && ngc"
+    "build": "rimraf aot dist && ngc",
+    "precommit": "lint-staged"
   },
   "repository": {
     "type": "git",
@@ -40,8 +41,11 @@
     "commitizen": "^2.9.6",
     "core-js": "^2.5.1",
     "cz-conventional-changelog": "^2.1.0",
+    "husky": "0.14.3",
     "ionic-angular": "^3.9.2",
     "jest": "^21.2.1",
+    "lint-staged": "6.0.0",
+    "prettier": "1.9.1",
     "rimraf": "^2.6.2",
     "rxjs": "^5.5.2",
     "semantic-release": "^8.2.0",
@@ -78,5 +82,8 @@
     "transformIgnorePatterns": [
       "node_modules/(?!@ionic-native)"
     ]
+  },
+  "lint-staged": {
+    "src/**/*.ts": ["prettier --single-quote --trailing-comma all --tab-width 4 --write", "git add"]
   }
 }

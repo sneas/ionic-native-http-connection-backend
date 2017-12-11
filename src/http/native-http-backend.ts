@@ -1,13 +1,27 @@
-import {Injectable} from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import {
-    Connection, ConnectionBackend, Headers, ReadyState, Request, RequestMethod, Response, ResponseOptions
+    Connection,
+    ConnectionBackend,
+    Headers,
+    ReadyState,
+    Request,
+    RequestMethod,
+    Response,
+    ResponseOptions,
 } from '@angular/http';
 import { Observer } from 'rxjs/Observer';
 import { HTTP, HTTPResponse } from '@ionic-native/http';
 import { HTTPError } from '../http-error';
 
-type HTTPRequestMethod = 'get' | 'post' | 'post' | 'put' | 'delete' | 'patch' | 'head';
+type HTTPRequestMethod =
+    | 'get'
+    | 'post'
+    | 'post'
+    | 'put'
+    | 'delete'
+    | 'patch'
+    | 'head';
 
 type DataSerializerType = 'json' | 'urlencoded';
 
@@ -19,7 +33,11 @@ export class NativeHttpConnectionD implements Connection {
     response: Observable<Response>;
     readyState: ReadyState;
 
-    constructor(req: Request, nativeHttp: HTTP, baseResponseOptions?: ResponseOptions) {
+    constructor(
+        req: Request,
+        nativeHttp: HTTP,
+        baseResponseOptions?: ResponseOptions,
+    ) {
         const allowedRequestMethods = [
             RequestMethod.Get,
             RequestMethod.Post,
@@ -34,50 +52,63 @@ export class NativeHttpConnectionD implements Connection {
         }
 
         this.request = req;
-        this.response = new Observable<Response>((responseObserver: Observer<Response>) => {
+        this.response = new Observable<Response>(
+            (responseObserver: Observer<Response>) => {
+                const headers = req.headers.toJSON();
+                Object.keys(headers).map(function(key) {
+                    if (headers[key].length > 1) {
+                        throw `Header ${key} contains more than one value`;
+                    }
+                    headers[key] = headers[key][0];
+                });
 
-            const headers = req.headers.toJSON();
-            Object.keys(headers).map(function(key) {
-                if (headers[key].length > 1) {
-                    throw `Header ${key} contains more than one value`
+                let body;
+
+                // 1 stands for ContentType.JSON. Angular doesn't export ContentType
+                if (req.detectContentTypeFromBody() === 1) {
+                    body = req.json();
+                } else {
+                    body = this.getBodyParams(req.getBody());
                 }
-                headers[key] = headers[key][0];
-            });
 
-            let body;
+                const requestMethod = this.detectRequestMethod(req);
 
-            // 1 stands for ContentType.JSON. Angular doesn't export ContentType
-            if (req.detectContentTypeFromBody() === 1) {
-                body = req.json();
-            } else {
-                body = this.getBodyParams(req.getBody());
-            }
+                /**
+                 * Request contains either encoded either decoded URL depended on the way
+                 * parameters are passed to Http component. Even though XMLHttpRequest automatically
+                 * converts unencoded URL, NativeHTTP requires it to be always encoded.
+                 */
+                const url = encodeURI(decodeURI(req.url));
 
-            const requestMethod = this.detectRequestMethod(req);
+                nativeHttp.setDataSerializer(
+                    this.detectDataSerializerType(req),
+                );
 
-            /**
-             * Request contains either encoded either decoded URL depended on the way
-             * parameters are passed to Http component. Even though XMLHttpRequest automatically
-             * converts unencoded URL, NativeHTTP requires it to be always encoded.
-             */
-            const url = encodeURI(decodeURI(req.url));
-
-            nativeHttp.setDataSerializer(this.detectDataSerializerType(req));
-
-            nativeHttp[requestMethod](url, body, headers).then((response: HTTPResponse) => {
-                this.fireResponse(responseObserver, new ResponseOptions({
-                    body: response.data,
-                    status: response.status,
-                    headers: new Headers(response.headers)
-                }), baseResponseOptions);
-            }).catch((error: HTTPError) => {
-                this.fireResponse(responseObserver, new ResponseOptions({
-                    body: error.error,
-                    status: error.status || 599, // https://httpstatuses.com/599
-                    headers: new Headers(error.headers)
-                }), baseResponseOptions);
-            });
-        });
+                nativeHttp[requestMethod](url, body, headers)
+                    .then((response: HTTPResponse) => {
+                        this.fireResponse(
+                            responseObserver,
+                            new ResponseOptions({
+                                body: response.data,
+                                status: response.status,
+                                headers: new Headers(response.headers),
+                            }),
+                            baseResponseOptions,
+                        );
+                    })
+                    .catch((error: HTTPError) => {
+                        this.fireResponse(
+                            responseObserver,
+                            new ResponseOptions({
+                                body: error.error,
+                                status: error.status || 599, // https://httpstatuses.com/599
+                                headers: new Headers(error.headers),
+                            }),
+                            baseResponseOptions,
+                        );
+                    });
+            },
+        );
     }
 
     private detectRequestMethod(req: Request): HTTPRequestMethod {
@@ -103,24 +134,30 @@ export class NativeHttpConnectionD implements Connection {
     }
 
     private detectDataSerializerType(req: Request): DataSerializerType {
-        if (req.method === RequestMethod.Post || req.method === RequestMethod.Put) {
+        if (
+            req.method === RequestMethod.Post ||
+            req.method === RequestMethod.Put
+        ) {
             // 1 stands for ContentType.JSON. Angular doesn't export ContentType
             if (req.detectContentTypeFromBody() === 1) {
-                return 'json'
+                return 'json';
             }
         }
 
         return 'urlencoded';
     }
 
-    private fireResponse(responseObserver: Observer<Response>, responseOptions: ResponseOptions,
-                         baseResponseOptions?: ResponseOptions) {
+    private fireResponse(
+        responseObserver: Observer<Response>,
+        responseOptions: ResponseOptions,
+        baseResponseOptions?: ResponseOptions,
+    ) {
         if (baseResponseOptions) {
             responseOptions = baseResponseOptions.merge(responseOptions);
         }
 
         const response = new Response(responseOptions);
-        response.ok = (response.status >= 200 && response.status < 300);
+        response.ok = response.status >= 200 && response.status < 300;
 
         if (response.ok) {
             responseObserver.next(response);
@@ -132,14 +169,16 @@ export class NativeHttpConnectionD implements Connection {
 
     private getBodyParams(query: string) {
         if (!query) {
-            return { };
+            return {};
         }
 
         return (/^[?#]/.test(query) ? query.slice(1) : query)
             .split('&')
-            .reduce((params: {[name: string]: string}, param) => {
-                let [ key, value ] = param.split('=');
-                params[key] = value ? decodeURIComponent(value.replace(/\+/g, ' ')) : '';
+            .reduce((params: { [name: string]: string }, param) => {
+                let [key, value] = param.split('=');
+                params[key] = value
+                    ? decodeURIComponent(value.replace(/\+/g, ' '))
+                    : '';
                 return params;
             }, {});
     }
@@ -152,11 +191,14 @@ export class NativeHttpConnectionD implements Connection {
 export class NativeHttpBackendD implements ConnectionBackend {
     constructor(
         private nativeHttp: HTTP,
-        private baseResponseOptions: ResponseOptions
-    ) {
-    }
+        private baseResponseOptions: ResponseOptions,
+    ) {}
 
     createConnection(request: Request): Connection {
-        return new NativeHttpConnectionD(request, this.nativeHttp, this.baseResponseOptions);
+        return new NativeHttpConnectionD(
+            request,
+            this.nativeHttp,
+            this.baseResponseOptions,
+        );
     }
 }

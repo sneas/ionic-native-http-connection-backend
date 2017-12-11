@@ -2,6 +2,12 @@
 
 Below you can find sufficient information for successful contribution into the project.
 
+## Code style
+
+`ionic-native-http-connection-backend` uses [prettier](https://github.com/prettier/prettier) on git hook to keep code consistent.
+
+To enable git hooks run `npm install` before commiting.
+
 ## Commit messages
 
 `ionic-native-http-connection-backend` uses [semantic-release](https://github.com/semantic-release/semantic-release) to release new versions automatically.
