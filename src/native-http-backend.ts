@@ -58,6 +58,10 @@ export class NativeHttpBackend implements HttpBackend {
             const url = encodeURI(decodeURI(req.url));
 
             const fireResponse = (response: {body: string, status: number, headers: any}) => {
+
+				console.warn('********')
+				console.warn(req.responseType)
+
                 // ok determines whether the response will be transmitted on the event or
                 // error channel. Unsuccessful status codes (not 2xx) will always be errors,
                 // but a successful status code can still result in an error if the user
