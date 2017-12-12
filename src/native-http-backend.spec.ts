@@ -113,9 +113,95 @@ describe('NativeHttpBackend', () => {
 
         httpBackend
             .handle(request)
-            .subscribe((response: HttpResponse<string>) => {
+            .subscribe((response: HttpResponse<Object>) => {
                 expect(response.headers.get('header1')).toBe('value1');
                 expect(response.headers.get('header2')).toBe('value2');
+                done();
+            });
+    });
+
+    it(`parses response body when responseType is json and body is string`, done => {
+        const request = new HttpRequest('GET', 'http://test.com', {
+            responseType: 'json',
+        });
+
+        spyOn(http, 'get').and.returnValue(
+            Promise.resolve({
+                status: 200,
+                data: '{"a": "b"}',
+            }),
+        );
+
+        httpBackend
+            .handle(request)
+            .subscribe((response: HttpResponse<Object>) => {
+                expect(response.body).toEqual({ a: 'b' });
+                done();
+            });
+    });
+
+    it(`throws error when responseType is json and response body can't be parsed`, done => {
+        const request = new HttpRequest('GET', 'http://test.com', {
+            responseType: 'json',
+        });
+
+        spyOn(http, 'get').and.returnValue(
+            Promise.resolve({
+                status: 200,
+                data: '"a": "b"}',
+            }),
+        );
+
+        httpBackend.handle(request).subscribe(
+            () => {
+                done.fail();
+            },
+            (error: HttpErrorResponse) => {
+                expect(error.error.text).toEqual('"a": "b"}');
+                done();
+            },
+        );
+    });
+
+    it(`returns body as is when responseType is json but body is not string`, done => {
+        const request = new HttpRequest('GET', 'http://test.com', {
+            responseType: 'json',
+        });
+
+        spyOn(http, 'get').and.returnValue(
+            Promise.resolve({
+                status: 500,
+                data: [1, 2, 3],
+            }),
+        );
+
+        httpBackend.handle(request).subscribe(
+            () => {
+                done.fail();
+            },
+            (response: HttpErrorResponse) => {
+                expect(response.error).toEqual([1, 2, 3]);
+                done();
+            },
+        );
+    });
+
+    it(`returns body as is when responseType is not json`, done => {
+        const request = new HttpRequest('GET', 'http://test.com', {
+            responseType: 'text',
+        });
+
+        spyOn(http, 'get').and.returnValue(
+            Promise.resolve({
+                status: 200,
+                data: 'Test response',
+            }),
+        );
+
+        httpBackend
+            .handle(request)
+            .subscribe((response: HttpResponse<string>) => {
+                expect(response.body).toEqual('Test response');
                 done();
             });
     });

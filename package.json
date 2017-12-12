@@ -84,6 +84,9 @@
     ]
   },
   "lint-staged": {
-    "src/**/*.ts": ["prettier --single-quote --trailing-comma all --tab-width 4 --write", "git add"]
+    "src/**/*.ts": [
+      "prettier --single-quote --trailing-comma all --tab-width 4 --write",
+      "git add"
+    ]
   }
 }
