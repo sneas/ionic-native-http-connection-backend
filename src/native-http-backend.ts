@@ -78,7 +78,7 @@ export class NativeHttpBackend implements HttpBackend {
                 // asked for JSON data and the body cannot be parsed as such.
                 let ok = response.status >= 200 && response.status < 300;
 
-                let body = response.body;
+                let body: any = response.body;
 
                 // Check whether the body needs to be parsed as JSON (in many cases the browser
                 // will have done that already).
