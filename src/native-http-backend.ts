@@ -56,7 +56,6 @@ export class NativeHttpBackend implements HttpBackend {
              * converts unencoded URL, NativeHTTP requires it to be always encoded.
              */
             const url = encodeURI(decodeURI(req.url));
-
             const fireResponse = (response: {body: string, status: number, headers: any}) => {
 
 
@@ -65,7 +64,7 @@ export class NativeHttpBackend implements HttpBackend {
                 // but a successful status code can still result in an error if the user
                 // asked for JSON data and the body cannot be parsed as such.
                 let ok = response.status >= 200 && response.status < 300;
-                let body;
+				let body;
 
                 // Check whether the body needs to be parsed as JSON (in many cases the browser
                 // will have done that already).
@@ -90,9 +89,10 @@ export class NativeHttpBackend implements HttpBackend {
                     }
 				}
 				
-				if (req.responseType !== 'json'){
-					body = response.body.toString();
+				if (req.responseType === "text"){
+					body = response.body;
 				}
+
 
                 if (ok) {
                     // A successful response is delivered on the event stream.
