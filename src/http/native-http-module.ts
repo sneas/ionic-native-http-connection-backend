@@ -8,14 +8,15 @@ import { HTTP } from '@ionic-native/http';
  * @deprecated and will be gone. Use NativeHttpModule instead
  */
 @NgModule({
-    imports: [
-        HttpModule
-    ],
+    imports: [HttpModule],
     providers: [
         HTTP,
         NativeHttpBackendD,
-        { provide: NativeHttpFallbackD, useClass: NativeHttpFallbackD, deps: [NativeHttpBackendD, XHRBackend] },
-    ]
+        {
+            provide: NativeHttpFallbackD,
+            useClass: NativeHttpFallbackD,
+            deps: [NativeHttpBackendD, XHRBackend],
+        },
+    ],
 })
-export class NativeHttpModuleD {
-}
+export class NativeHttpModuleD {}

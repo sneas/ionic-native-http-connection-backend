@@ -2,7 +2,6 @@ import { HTTP, HTTPResponse } from '@ionic-native/http';
 import { HTTPError } from './http-error';
 
 export class HTTPMock extends HTTP {
-
     requestResolve: (response: HTTPResponse) => void;
     requestReject: (error: HTTPError) => void;
 
