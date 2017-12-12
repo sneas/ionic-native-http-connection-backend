@@ -8,15 +8,13 @@ import { checkAvailability } from '@ionic-native/core';
  */
 @Injectable()
 export class NativeHttpFallbackD implements ConnectionBackend {
-
     protected nativeIsForced: boolean | null = null;
     protected nativeIsAvailable: boolean | null = null;
 
     constructor(
         private nativeHttpBackend: NativeHttpBackendD,
-        private fallback: ConnectionBackend
-    ) {
-    }
+        private fallback: ConnectionBackend,
+    ) {}
 
     createConnection(request: Request): Connection {
         /**
@@ -46,7 +44,8 @@ export class NativeHttpFallbackD implements ConnectionBackend {
         }
 
         if (this.nativeIsAvailable === null) {
-            this.nativeIsAvailable = checkAvailability('cordova.plugin.http') === true;
+            this.nativeIsAvailable =
+                checkAvailability('cordova.plugin.http') === true;
         }
 
         return this.nativeIsAvailable;

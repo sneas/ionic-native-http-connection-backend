@@ -17,18 +17,20 @@ export class NativeHttpFallback implements HttpBackend {
     ) {}
 
     handle(req: HttpRequest<any>): Observable<HttpEvent<any>> {
-        return Observable.fromPromise(this.platform.ready())
-            .switchMap(() => {
-                /**
-                 * Native HTTP Cordova plugin doesn't like local requests
-                 */
-                const isExternalRequest = checkExternalRequest(req);
+        return Observable.fromPromise(this.platform.ready()).switchMap(() => {
+            /**
+             * Native HTTP Cordova plugin doesn't like local requests
+             */
+            const isExternalRequest = checkExternalRequest(req);
 
-                if (isExternalRequest && checkAvailability('cordova.plugin.http') === true) {
-                    return this.cordovaHttpBackend.handle(req);
-                } else {
-                    return this.fallbackBackend.handle(req);
-                }
-            });
+            if (
+                isExternalRequest &&
+                checkAvailability('cordova.plugin.http') === true
+            ) {
+                return this.cordovaHttpBackend.handle(req);
+            } else {
+                return this.fallbackBackend.handle(req);
+            }
+        });
     }
 }
