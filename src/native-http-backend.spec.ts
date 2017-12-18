@@ -2,6 +2,7 @@ import { HTTPMock } from './http.mock';
 import {
     HttpErrorResponse,
     HttpHeaders,
+    HttpParams,
     HttpRequest,
     HttpResponse,
 } from '@angular/common/http';
@@ -118,6 +119,28 @@ describe('NativeHttpBackend', () => {
                 expect(response.headers.get('header2')).toBe('value2');
                 done();
             });
+    });
+
+    it('passes get params to the plugin call', done => {
+        const request = new HttpRequest('GET', 'http://test.com', {
+            params: new HttpParams().append('a', 'b').append('c', 'd'),
+        });
+
+        spyOn(http, 'get').and.returnValue(
+            Promise.resolve({
+                status: 200,
+                data: '{}',
+            }),
+        );
+
+        httpBackend.handle(request).subscribe(() => {
+            expect(http.get).toBeCalledWith(
+                'http://test.com?a=b&c=d',
+                expect.anything(),
+                expect.anything(),
+            );
+            done();
+        });
     });
 
     it(`parses response body when responseType is json and body is string`, done => {

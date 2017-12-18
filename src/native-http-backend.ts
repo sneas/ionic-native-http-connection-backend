@@ -63,9 +63,9 @@ export class NativeHttpBackend implements HttpBackend {
             /**
              * Request contains either encoded either decoded URL depended on the way
              * parameters are passed to Http component. Even though XMLHttpRequest automatically
-             * converts unencoded URL, NativeHTTP requires it to be always encoded.
+             * converts not encoded URL, NativeHTTP requires it to be always encoded.
              */
-            const url = encodeURI(decodeURI(req.url));
+            const url = encodeURI(decodeURI(req.urlWithParams));
 
             const fireResponse = (response: {
                 body: string;
