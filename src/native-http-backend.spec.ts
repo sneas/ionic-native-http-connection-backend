@@ -98,6 +98,30 @@ describe('NativeHttpBackend', () => {
         });
     });
 
+    it('loves and understands array as body', done => {
+        const request = new HttpRequest('POST', 'http://test.com', ['a', 'b']);
+
+        spyOn(http, 'post').and.returnValue(
+            Promise.resolve({
+                status: 200,
+                data: '{}',
+                headers: {},
+            }),
+        );
+
+        spyOn(http, 'setDataSerializer');
+
+        httpBackend.handle(request).subscribe(() => {
+            expect(http.setDataSerializer).toHaveBeenCalledWith('json');
+            expect(http.post).toHaveBeenCalledWith(
+                expect.anything(),
+                ['a', 'b'],
+                expect.anything(),
+            );
+            done();
+        });
+    });
+
     it('converts HTTPResponse headers object to Headers', done => {
         const request = new HttpRequest('POST', 'http://test.com', 'a=b&c=d');
 

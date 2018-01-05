@@ -54,6 +54,8 @@ export class NativeHttpBackend implements HttpBackend {
 
             if (typeof req.body === 'string') {
                 body = this.getBodyParams(req.body);
+            } else if (Array.isArray(req.body)) {
+                body = req.body;
             } else {
                 body = { ...req.body };
             }
