@@ -19,7 +19,14 @@ ionic cordova plugin add cordova-plugin-advanced-http
 
 ## Usage
 
-### HttpClientModule (Angular >= 4.3)
+Angular > 4.3 provides two modules for HTTP requests:
+
+- `HttpClientModule` (imports from `@angular/common/http`).
+- Deprecated `HttpModule` (imports from `@angular/http`).
+
+`ionic-native-http-connection-backend` supports both modules.
+
+### HttpClientModule (@angular/common/http)
 
 Add `NativeHttpModule` and `NativeHttpFallback` into the application's module
 
@@ -27,6 +34,7 @@ Add `NativeHttpModule` and `NativeHttpFallback` into the application's module
 import { NgModule } from '@angular/core';
 import { HttpBackend, HttpXhrBackend } from '@angular/common/http';
 import { NativeHttpModule, NativeHttpBackend, NativeHttpFallback } from 'ionic-native-http-connection-backend';
+import { Platform } from 'ionic-angular';
 
 @NgModule({
     declarations: [],
@@ -43,7 +51,7 @@ export class AppModule {
 }
 ```
 
-### HttpModule (Angular < 4.3). Deprecated
+### Deprecated HttpModule (@angular/http)
 
 Add `NativeHttpModuleD` and `NativeHttpFallbackD` into the application's module
 
@@ -73,7 +81,7 @@ Contributing guidelines could be found in [CONTRIBUTING.md](CONTRIBUTING.md)
 
 ## Troubleshooting
 
-### (HttpModule, Angular < 4.3) I followed the installation and usage instructions but still receive CORS issue on app start
+### (HttpModule, @angular/http) I followed the installation and usage instructions but still receive CORS issue on app start
 
 Wrap the first request with `Platform.ready()`. The code will resemble the listing below.
 
