@@ -48,7 +48,7 @@
     "prettier": "1.9.1",
     "rimraf": "^2.6.2",
     "rxjs": "^5.5.2",
-    "semantic-release": "^8.2.0",
+    "semantic-release": "^15.0.2",
     "ts-jest": "^21.2.4",
     "typescript": "^2.6.2",
     "zone.js": "^0.8.18"
