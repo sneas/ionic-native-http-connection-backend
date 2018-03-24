@@ -1,11 +1,13 @@
-import { Injectable } from '@angular/core';
-import { HttpBackend, HttpEvent, HttpRequest } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
-import { Platform } from 'ionic-angular';
-import { NativeHttpBackend } from './native-http-backend';
 import 'rxjs/add/observable/fromPromise';
 import 'rxjs/add/operator/switchMap';
+
+import { HttpBackend, HttpEvent, HttpRequest } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { checkAvailability } from '@ionic-native/core';
+import { Platform } from 'ionic-angular';
+import { Observable } from 'rxjs/Observable';
+
+import { NativeHttpBackend } from './native-http-backend';
 import { checkExternalRequest } from './utils/check-external-request';
 
 @Injectable()

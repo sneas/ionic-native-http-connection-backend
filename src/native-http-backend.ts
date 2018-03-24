@@ -1,4 +1,3 @@
-import { Injectable } from '@angular/core';
 import {
     HttpBackend,
     HttpErrorResponse,
@@ -7,10 +6,12 @@ import {
     HttpRequest,
     HttpResponse,
 } from '@angular/common/http';
+import { HttpJsonParseError } from '@angular/common/http/src/response';
+import { Injectable } from '@angular/core';
+import { HTTP, HTTPResponse } from '@ionic-native/http';
 import { Observable } from 'rxjs/Observable';
 import { Observer } from 'rxjs/Observer';
-import { HttpJsonParseError } from '@angular/common/http/src/response';
-import { HTTP, HTTPResponse } from '@ionic-native/http';
+
 import { HTTPError } from './http-error';
 
 type HTTPRequestMethod =

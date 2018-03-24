@@ -1,7 +1,8 @@
-import { ConnectionBackend, Request, Connection } from '@angular/http';
 import { Injectable } from '@angular/core';
-import { NativeHttpBackendD } from './native-http-backend';
+import { Connection, ConnectionBackend, Request } from '@angular/http';
 import { checkAvailability } from '@ionic-native/core';
+
+import { NativeHttpBackendD } from './native-http-backend';
 
 /**
  * @deprecated and will be gone. Use NativeHttpFallback instead

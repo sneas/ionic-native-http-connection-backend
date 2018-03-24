@@ -1,4 +1,3 @@
-import { HTTPMock } from './http.mock';
 import {
     HttpErrorResponse,
     HttpHeaders,
@@ -6,6 +5,8 @@ import {
     HttpRequest,
     HttpResponse,
 } from '@angular/common/http';
+
+import { HTTPMock } from './http.mock';
 import { NativeHttpBackend } from './native-http-backend';
 
 describe('NativeHttpBackend', () => {

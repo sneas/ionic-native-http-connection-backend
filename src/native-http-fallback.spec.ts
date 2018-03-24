@@ -1,16 +1,19 @@
-import { NativeHttpBackend } from './native-http-backend';
+import 'rxjs/add/observable/of';
+
 import {
     HttpBackend,
     HttpEvent,
     HttpRequest,
     HttpResponse,
 } from '@angular/common/http';
-import { Platform } from 'ionic-angular';
-import { NativeHttpFallback } from './native-http-fallback';
-import { HTTP } from '@ionic-native/http';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/of';
 import { checkAvailability } from '@ionic-native/core';
+import { HTTP } from '@ionic-native/http';
+import { Platform } from 'ionic-angular';
+import { Observable } from 'rxjs/Observable';
+
+import { NativeHttpBackend } from './native-http-backend';
+import { NativeHttpFallback } from './native-http-fallback';
+
 import Mock = jest.Mock;
 
 jest.mock('@ionic-native/core');
