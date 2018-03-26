@@ -5,13 +5,14 @@ import {
     RequestMethod,
     RequestOptions,
 } from '@angular/http';
+import { MockBackend } from '@angular/http/testing';
+import { HTTP } from '@ionic-native/http';
+
 import {
     NativeHttpBackendD,
     NativeHttpConnectionD,
 } from './native-http-backend';
-import { HTTP } from '@ionic-native/http';
 import { NativeHttpFallbackD } from './native-http-fallback';
-import { MockBackend } from '@angular/http/testing';
 
 describe('NativeHttpFallbackD', () => {
     let nativeHttpFallback: NativeHttpFallbackD;

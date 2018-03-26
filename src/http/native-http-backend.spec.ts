@@ -5,8 +5,9 @@ import {
     RequestOptions,
     Response,
 } from '@angular/http';
-import { NativeHttpConnectionD } from './native-http-backend';
+
 import { HTTPMock } from '../http.mock';
+import { NativeHttpConnectionD } from './native-http-backend';
 
 describe('NativeHttpConnectionD', () => {
     let http: HTTPMock;

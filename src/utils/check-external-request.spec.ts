@@ -1,5 +1,6 @@
-import { checkExternalRequest } from './check-external-request';
 import { HttpRequest } from '@angular/common/http';
+
+import { checkExternalRequest } from './check-external-request';
 
 describe('checkExternalRequest', () => {
     it('should detect http request as external', () => {
