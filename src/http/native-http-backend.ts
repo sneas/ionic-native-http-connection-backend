@@ -79,7 +79,7 @@ export class NativeHttpConnectionD implements Connection {
                  * parameters are passed to Http component. Even though XMLHttpRequest automatically
                  * converts unencoded URL, NativeHTTP requires it to be always encoded.
                  */
-                const url = encodeURI(decodeURI(req.url)).replace('%252F', '%2F'); 
+                const url = encodeURI(decodeURI(req.url)).replace('%252F', '%2F');
 
                 nativeHttp.setDataSerializer(
                     this.detectDataSerializerType(req),
