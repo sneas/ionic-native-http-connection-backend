@@ -41,7 +41,7 @@ export class NativeHttpBackend implements HttpBackend {
             'HEAD',
         ];
 
-        if (!allowedRequestMethods.includes(req.method.toUpperCase())) {
+        if (allowedRequestMethods.indexOf(req.method.toUpperCase()) === -1) {
             throw 'Only GET, POST, PUT, DELETE, PATCH and HEAD methods are supported by the current Native HTTP version';
         }
 
@@ -68,7 +68,10 @@ export class NativeHttpBackend implements HttpBackend {
              * parameters are passed to Http component. Even though XMLHttpRequest automatically
              * converts not encoded URL, NativeHTTP requires it to be always encoded.
              */
-            const url = encodeURI(decodeURI(req.urlWithParams)).replace('%252F', '%2F');
+            const url = encodeURI(decodeURI(req.urlWithParams)).replace(
+                '%252F',
+                '%2F',
+            );
 
             const fireResponse = (response: {
                 body: string;
