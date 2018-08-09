@@ -1,25 +1,39 @@
-# A solution to CORS problem of Ionic and WKWebView
+# ionic-native-http-connection-backend
 
 [![travis build](https://img.shields.io/travis/sneas/ionic-native-http-connection-backend.svg?style=flat-square&maxAge=2592000)](https://travis-ci.org/sneas/ionic-native-http-connection-backend)
 [![version](https://img.shields.io/npm/v/ionic-native-http-connection-backend.svg?style=flat-square)](http://npm.im/ionic-native-http-connection-backend)
 [![MIT License](https://img.shields.io/npm/l/component-library.svg?style=flat-square)](http://opensource.org/licenses/MIT)
 
+This library adds `@ionic-native/http` (when available) as a connection backend to Angular's `Http` and `HttpClient`
+
 ## Motivation
 
-Even though there is a way to solve CORS issue without changing server's response header by using [Cordova HTTP plugin](https://ionicframework.com/docs/native/http/), the problem is it works only on device and doesn't provide all the power of Angular's `Http` and `HttpClient` services.
+Now that Apple promotes/requires the use of `WKWebView` instead of the deprecated `UIWebView`, Ionic has switched newly created apps over via their [`cordova-plugin-ionic-webview`](https://github.com/ionic-team/cordova-plugin-ionic-webview) 
+(and Cordova offers it via their [`cordova-plugin-wkwebview-engine`](https://github.com/apache/cordova-plugin-wkwebview-engine)). That causes requests that used to work just fine to fail with [CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) errors.
 
-This project's been born as a solution to CORS problem allowing to use Angular's `Http` and `HttpClient` services in both environments: browser and device.
+The real solution of course is to fix the CORS issues server side - but this may not be possible with e.g. 3rd party APIs.
+
+Even though there is a way to solve CORS issues without changing server's response header by using [`@ionic-native/http`](https://ionicframework.com/docs/native/http/), this only works on device and doesn't provide all the power of Angular's `Http` and `HttpClient`.
+
+## How it works
+
+- The library provides a `HttpBackend` interface for Angular's `HttpClient`
+- This `HttpBackend` interface tries to use `@ionic-native/http` whenever it is possible (= on device with installed plugin)
+- If `HttpBackend` finds it impossible to use `@ionic-native/http`, it falls back to standard Angular code (`HttpXhrBackend`, which uses `XmlHttpRequest`)
+
+This strategy allows developers to use Angular's `HttpClient` transparently in both environments: Browser and Device.
 
 ## Installation
 
 ```bash
-npm install --save @ionic-native/http ionic-native-http-connection-backend
-ionic cordova plugin add cordova-plugin-advanced-http
+npm install --save ionic-native-http-connection-backend
 ```
+
+Then follow instructions at https://ionicframework.com/docs/native/http/#installation
 
 ## Usage
 
-Add `NativeHttpModule` and `NativeHttpFallback` into the application's module
+Add `NativeHttpModule`, `NativeHttpBackend` and `NativeHttpFallback` into the application's module
 
 ```typescript
 import { NgModule } from '@angular/core';
@@ -42,7 +56,7 @@ export class AppModule {
 }
 ```
 
-### Angular < 4.3
+### Angular <4.3
 
 [DEPRECATED.md](DEPRECATED.md)
 
