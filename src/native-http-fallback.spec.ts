@@ -6,7 +6,7 @@ import {
 } from '@angular/common/http';
 import { checkAvailability } from '@ionic-native/core';
 import { HTTP } from '@ionic-native/http/ngx';
-import { Platform } from 'ionic-angular';
+import { Platform } from '@ionic/angular';
 import { Observable, of } from 'rxjs';
 
 import { NativeHttpBackend } from './native-http-backend';
