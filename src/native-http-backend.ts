@@ -8,9 +8,8 @@ import {
 } from '@angular/common/http';
 import { HttpJsonParseError } from '@angular/common/http/src/response';
 import { Injectable } from '@angular/core';
-import { HTTP, HTTPResponse } from '@ionic-native/http';
-import { Observable } from 'rxjs/Observable';
-import { Observer } from 'rxjs/Observer';
+import { HTTP, HTTPResponse } from '@ionic-native/http/ngx';
+import { Observable, Observer } from 'rxjs';
 
 import { HTTPError } from './http-error';
 

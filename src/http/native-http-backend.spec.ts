@@ -72,6 +72,7 @@ describe('NativeHttpConnectionD', () => {
         );
 
         http.requestResolve({
+            url: '',
             status: 500,
             headers: {},
         });
@@ -153,6 +154,7 @@ describe('NativeHttpConnectionD', () => {
         );
 
         http.requestResolve({
+            url: '',
             status: 200,
             headers: {
                 header1: 'value1',

@@ -62,6 +62,7 @@ describe('NativeHttpBackend', () => {
         );
 
         http.requestResolve({
+            url: '',
             status: 500,
             headers: {},
         });
