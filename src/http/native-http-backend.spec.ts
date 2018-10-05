@@ -201,19 +201,24 @@ describe('NativeHttpConnectionD', () => {
         expect(http.setDataSerializer).toHaveBeenCalledWith('json');
     });
 
-    it('should throw error if request header contains more than one value', () => {
-        expect(() => {
-            const request = new Request(
-                new RequestOptions({
-                    method: RequestMethod.Put,
-                    headers: new Headers({
-                        headerName1: ['headerValue1', 'headerValue2'],
-                    }),
+    it('should throw error if request header contains more than one value', done => {
+        const request = new Request(
+            new RequestOptions({
+                method: RequestMethod.Put,
+                headers: new Headers({
+                    headerName1: ['headerValue1', 'headerValue2'],
                 }),
-            );
-            const connection = new NativeHttpConnectionD(request, http);
-            connection.response.subscribe();
-        }).toThrow('Header headerName1 contains more than one value');
+            }),
+        );
+        const connection = new NativeHttpConnectionD(request, http);
+        connection.response.subscribe({
+            error: err => {
+                expect(err).toEqual(
+                    'Header headerName1 contains more than one value',
+                );
+                done();
+            },
+        });
     });
 
     it('should encode URL', () => {
