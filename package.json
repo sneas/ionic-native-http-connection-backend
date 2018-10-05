@@ -91,7 +91,11 @@
       "git add"
     ]
   },
+  "publishConfig": {
+    "tag": "next"
+  },
   "release": {
+    "branch": "master",
     "prepare": [
       "@semantic-release/npm",
       {
