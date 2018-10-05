@@ -29,8 +29,11 @@ describe('NativeHttpFallback', () => {
     let cordovaHttpFallback: NativeHttpFallback;
 
     beforeEach(() => {
-        platform = new Platform();
-        platform.ready = jest.fn().mockReturnValue(Promise.resolve());
+        const PlatformMock = jest.fn<Platform>(() => ({
+            ready: jest.fn().mockReturnValue(Promise.resolve()),
+        }));
+
+        platform = new PlatformMock();
         cordovaHttpBackend = new NativeHttpBackend(new HTTP());
         fallbackBackend = new MockHttpBackend();
         cordovaHttpFallback = new NativeHttpFallback(
