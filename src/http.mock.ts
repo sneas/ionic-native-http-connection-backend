@@ -1,4 +1,4 @@
-import { HTTP, HTTPResponse } from '@ionic-native/http';
+import { HTTP, HTTPResponse } from '@ionic-native/http/ngx';
 
 import { HTTPError } from './http-error';
 

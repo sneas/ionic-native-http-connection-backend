@@ -29,35 +29,37 @@
   },
   "homepage": "https://github.com/sneas/ionic-native-http-connection-backend#readme",
   "devDependencies": {
-    "@angular/common": "^5.2.10",
-    "@angular/compiler": "^5.2.10",
-    "@angular/compiler-cli": "^5.2.10",
-    "@angular/core": "^5.2.10",
-    "@angular/forms": "^5.2.10",
-    "@angular/http": "^5.2.10",
-    "@angular/platform-browser": "^5.2.10",
-    "@ionic-native/core": "^4.7.0",
-    "@ionic-native/http": "^4.7.0",
-    "@semantic-release/git": "5.0.0",
-    "@types/jest": "^22.2.3",
-    "commitizen": "^2.9.6",
-    "core-js": "^2.5.5",
+    "@angular/common": "^6.1.7",
+    "@angular/compiler": "^6.1.7",
+    "@angular/compiler-cli": "^6.1.7",
+    "@angular/core": "^6.1.7",
+    "@angular/forms": "^6.1.7",
+    "@angular/http": "^6.1.7",
+    "@angular/platform-browser": "^6.1.7",
+    "@ionic-native/core": "^5.0.0-beta.18",
+    "@ionic-native/http": "^5.0.0-beta.18",
+    "@ionic/angular": "^4.0.0-beta.11",
+    "@ionic/core": "^4.0.0-beta.11",
+    "@semantic-release/git": "^7.0.4",
+    "@types/jest": "^23.3.2",
+    "babel-jest": "^23.6.0",
+    "commitizen": "^2.10.1",
+    "core-js": "^2.5.7",
     "cz-conventional-changelog": "^2.1.0",
     "husky": "0.14.3",
-    "ionic-angular": "^3.9.2",
-    "jest": "^22.4.3",
-    "lint-staged": "^7.0.4",
-    "prettier": "^1.12.1",
+    "jest": "^23.6.0",
+    "lint-staged": "^7.2.2",
+    "prettier": "^1.14.2",
     "rimraf": "^2.6.2",
-    "rxjs": "^5.5.10",
+    "rxjs": "^6.3.2",
     "semantic-release": "^15.8.1",
     "travis-deploy-once": "^5.0.1",
-    "ts-jest": "^22.4.4",
-    "typescript": "~2.7.2",
+    "ts-jest": "^23.1.4",
+    "typescript": "^2.9.2",
     "zone.js": "^0.8.26"
   },
   "peerDependencies": {
-    "@ionic-native/http": "^4.4.2"
+    "@ionic-native/http": "^5.0.0-beta.18"
   },
   "config": {
     "commitizen": {
@@ -103,5 +105,8 @@
         "message": "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
       }
     ]
+  },
+  "dependencies": {
+    "@angular/router": "^6.1.7"
   }
 }

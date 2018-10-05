@@ -9,9 +9,8 @@ import {
     Response,
     ResponseOptions,
 } from '@angular/http';
-import { HTTP, HTTPResponse } from '@ionic-native/http';
-import { Observable } from 'rxjs/Observable';
-import { Observer } from 'rxjs/Observer';
+import { HTTP, HTTPResponse } from '@ionic-native/http/ngx';
+import { Observable, Observer } from 'rxjs';
 
 import { HTTPError } from '../http-error';
 
@@ -79,7 +78,10 @@ export class NativeHttpConnectionD implements Connection {
                  * parameters are passed to Http component. Even though XMLHttpRequest automatically
                  * converts unencoded URL, NativeHTTP requires it to be always encoded.
                  */
-                const url = encodeURI(decodeURI(req.url)).replace('%252F', '%2F');
+                const url = encodeURI(decodeURI(req.url)).replace(
+                    '%252F',
+                    '%2F',
+                );
 
                 nativeHttp.setDataSerializer(
                     this.detectDataSerializerType(req),
