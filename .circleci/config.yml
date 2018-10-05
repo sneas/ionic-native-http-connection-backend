@@ -1,0 +1,18 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: 'circleci/node:latest'
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - run: npm install
+      - save_cache:
+          paths:
+          - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
+      - run: npm test
+      - run: npm build
+      - run:
+          name: release
+          command: npm run semantic-release || true
