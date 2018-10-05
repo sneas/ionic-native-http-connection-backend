@@ -84,7 +84,7 @@
     },
     "setupTestFrameworkScriptFile": "<rootDir>/jest.init.ts",
     "transformIgnorePatterns": [
-      "node_modules/(?!@ionic-native)"
+      "node_modules/(?!@ionic)"
     ]
   },
   "lint-staged": {
