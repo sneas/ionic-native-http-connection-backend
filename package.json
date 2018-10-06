@@ -8,7 +8,6 @@
     "commit": "git-cz",
     "test": "jest",
     "semantic-release": "semantic-release",
-    "travis-deploy-once": "travis-deploy-once",
     "build": "rimraf aot dist && ngc",
     "precommit": "lint-staged"
   },
@@ -54,7 +53,6 @@
     "rimraf": "^2.6.2",
     "rxjs": "^6.3.3",
     "semantic-release": "^15.9.17",
-    "travis-deploy-once": "^5.0.9",
     "ts-jest": "^23.10.3",
     "typescript": "^2.9.2",
     "zone.js": "^0.8.26"
