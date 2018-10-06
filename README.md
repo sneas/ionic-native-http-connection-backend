@@ -30,6 +30,14 @@ npm install --save ionic-native-http-connection-backend
 
 Then follow instructions at https://ionicframework.com/docs/native/http/#installation
 
+### Ionic 4 (beta)
+
+For Ionic 4 support consider
+
+```bash
+npm install --save ionic-native-http-connection-backend@next
+```
+
 ## Usage
 
 Add `NativeHttpModule`, `NativeHttpBackend` and `NativeHttpFallback` into the application's module
