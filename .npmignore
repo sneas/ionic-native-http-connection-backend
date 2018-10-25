@@ -1,7 +1,7 @@
 node_modules
 src
-.travis.yml
 jest.init.ts
 .gitignore
 tsconfig.json
 tsconfig.test.json
+.circleci
