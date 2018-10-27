@@ -1,6 +1,6 @@
 version: 2
 jobs:
-  build:
+  test:
     docker:
       - image: 'circleci/node:latest'
     working_directory: ~/repo
@@ -8,11 +8,34 @@ jobs:
       - checkout
       - run: npm install
       - save_cache:
+          key: node_modules-{{ checksum "package.json" }}-{{ arch }}
           paths:
-          - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
-      - run: npm test
-      - run: npm run build
+            - node_modules
       - run:
-          name: release
+          name: Test
+          command: npm run test
+  deploy:
+    docker:
+      - image: 'circleci/node:latest'
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - restore_cache:
+          key: node_modules-{{ checksum "package.json" }}-{{ arch }}
+      - run:
+          name: Build
+          command: npm run build
+      - run:
+          name: Release
           command: npm run semantic-release || true
+workflows:
+  version: 2
+  test-and-deploy:
+    jobs:
+      - test
+      - deploy:
+          requires:
+            - test
+          filters:
+            branches:
+              only: master
