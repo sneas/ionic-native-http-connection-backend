@@ -351,4 +351,29 @@ describe('NativeHttpBackend', () => {
             done();
         });
     });
+
+    it('should not encode already encoded URL which includes reserved characters', done => {
+        const request = new HttpRequest(
+            'POST',
+            'http://api.com/test?reserved=%3B%2C%2F%3F%3A%40%26%3D%2B%24%23',
+            'a=b&c=d',
+        );
+
+        spyOn(http, 'post').and.returnValue(
+            Promise.resolve({
+                status: 200,
+                data: '{}',
+                headers: {},
+            }),
+        );
+
+        httpBackend.handle(request).subscribe(() => {
+            expect(http.post).toHaveBeenCalledWith(
+                'http://api.com/test?reserved=%3B%2C%2F%3F%3A%40%26%3D%2B%24%23',
+                expect.anything(),
+                expect.anything(),
+            );
+            done();
+        });
+    });
 });

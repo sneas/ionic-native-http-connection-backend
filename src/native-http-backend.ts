@@ -68,8 +68,8 @@ export class NativeHttpBackend implements HttpBackend {
              * converts not encoded URL, NativeHTTP requires it to be always encoded.
              */
             const url = encodeURI(decodeURI(req.urlWithParams)).replace(
-                '%252F',
-                '%2F',
+                /%253B|%252C|%252F|%253F|%253A|%2540|%2526|%253D|%252B|%2524|%2523/g, // ;,/?:@&=+$#
+                substring => '%' + substring.slice(3),
             );
 
             const fireResponse = (response: {
