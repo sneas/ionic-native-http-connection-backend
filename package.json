@@ -37,7 +37,7 @@
     "@angular/platform-browser": "^5.2.10",
     "@ionic-native/core": "^4.7.0",
     "@ionic-native/http": "^4.7.0",
-    "@semantic-release/git": "5.0.0",
+    "@semantic-release/git": "^7.0.5",
     "@types/jest": "^22.2.3",
     "commitizen": "^2.9.6",
     "core-js": "^2.5.5",
@@ -49,7 +49,7 @@
     "prettier": "^1.12.1",
     "rimraf": "^2.6.2",
     "rxjs": "^5.5.10",
-    "semantic-release": "^15.8.1",
+    "semantic-release": "^15.12.3",
     "ts-jest": "^22.4.4",
     "typescript": "~2.7.2",
     "zone.js": "^0.8.26"
@@ -90,10 +90,10 @@
     ]
   },
   "publishConfig": {
-    "tag": "next"
+    "tag": "latest"
   },
   "release": {
-    "branch": "master",
+    "branch": "latest",
     "prepare": [
       "@semantic-release/npm",
       {
