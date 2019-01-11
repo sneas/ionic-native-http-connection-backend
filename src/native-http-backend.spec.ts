@@ -13,6 +13,10 @@ describe('NativeHttpBackend', () => {
     let http: HTTPMock;
     let httpBackend: NativeHttpBackend;
 
+    // Shared test variables
+    const textContentTypeValue: string = 'text/plain; charset=UTF8';
+    const testXmlString = `<?xml version="1.0" encoding="UTF-8"?><note><body>test</body></note>`;
+
     beforeEach(() => {
         http = new HTTPMock();
         httpBackend = new NativeHttpBackend(http);
@@ -62,6 +66,7 @@ describe('NativeHttpBackend', () => {
         );
 
         http.requestResolve({
+            url: '',
             status: 500,
             headers: {},
         });
@@ -93,6 +98,40 @@ describe('NativeHttpBackend', () => {
                 {
                     headerName1: 'headerValue1',
                     headerName2: 'headerValue2',
+                },
+            );
+            done();
+        });
+    });
+
+    it('does not transforms request body and transforms correctly headers to Native HTTP requirements (for Content-Type: text/*)', done => {
+        const request = new HttpRequest(
+            'POST',
+            'http://test.com',
+            testXmlString,
+            {
+                headers: new HttpHeaders({
+                    headerName1: ['headerValue1'],
+                    'Content-Type': [textContentTypeValue],
+                }),
+            },
+        );
+
+        spyOn(http, 'post').and.returnValue(
+            Promise.resolve({
+                status: 200,
+                data: '{}',
+                headers: {},
+            }),
+        );
+
+        httpBackend.handle(request).subscribe(() => {
+            expect(http.post).toHaveBeenCalledWith(
+                expect.anything(),
+                testXmlString,
+                {
+                    headerName1: 'headerValue1',
+                    'Content-Type': textContentTypeValue,
                 },
             );
             done();
@@ -270,6 +309,24 @@ describe('NativeHttpBackend', () => {
 
         httpBackend.handle(request).subscribe();
         expect(http.setDataSerializer).toHaveBeenCalledWith('urlencoded');
+    });
+
+    it("should set utf8 serializer when sending request with header 'Content-Type: 'text/...'", () => {
+        const request = new HttpRequest(
+            'POST',
+            'http://test.com',
+            testXmlString,
+            {
+                headers: new HttpHeaders({
+                    'Content-Type': [textContentTypeValue],
+                }),
+            },
+        );
+
+        spyOn(http, 'setDataSerializer');
+
+        httpBackend.handle(request).subscribe();
+        expect(http.setDataSerializer).toHaveBeenCalledWith('utf8');
     });
 
     it(`uses the first request header in case it is an array`, done => {
