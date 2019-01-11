@@ -9,8 +9,7 @@ import {
 import { HttpJsonParseError } from '@angular/common/http/src/response';
 import { Injectable } from '@angular/core';
 import { HTTP, HTTPResponse } from '@ionic-native/http';
-import { Observable } from 'rxjs/Observable';
-import { Observer } from 'rxjs/Observer';
+import { Observable, Observer } from 'rxjs';
 
 import { HTTPError } from './http-error';
 
@@ -23,7 +22,7 @@ type HTTPRequestMethod =
     | 'patch'
     | 'head';
 
-type DataSerializerType = 'json' | 'urlencoded';
+type DataSerializerType = 'json' | 'urlencoded' | 'utf8';
 
 const XSSI_PREFIX = /^\)\]\}',?\n/;
 
@@ -53,7 +52,10 @@ export class NativeHttpBackend implements HttpBackend {
 
             let body;
 
-            if (typeof req.body === 'string') {
+            // if serializer utf8 it means body content type (text/...) should be string
+            if (this.getSerializerTypeByContentType(req) === 'utf8') {
+                body = req.body;
+            } else if (typeof req.body === 'string') {
                 body = this.getBodyParams(req.body);
             } else if (Array.isArray(req.body)) {
                 body = req.body;
@@ -159,9 +161,36 @@ export class NativeHttpBackend implements HttpBackend {
         });
     }
 
+    private getSerializerTypeByContentType(
+        req: HttpRequest<any>,
+    ): DataSerializerType {
+        const reqContentType = (
+            req.headers.get('content-type') || ''
+        ).toLocaleLowerCase();
+
+        if (reqContentType.indexOf('text/') === 0) {
+            return 'utf8';
+        }
+
+        if (reqContentType.indexOf('application/json') === 0) {
+            return 'json';
+        }
+
+        return null;
+    }
+
     private detectDataSerializerType(
         req: HttpRequest<any>,
     ): DataSerializerType {
+        const serializerByContentType = this.getSerializerTypeByContentType(
+            req,
+        );
+
+        if (serializerByContentType !== null) {
+            return serializerByContentType;
+        }
+
+        // No Content-Type present try to gess it by method & body
         if (
             req.method.toLowerCase() === 'post' ||
             req.method.toLowerCase() === 'put' ||
