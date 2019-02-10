@@ -29,11 +29,11 @@ describe('NativeHttpFallback', () => {
     let cordovaHttpFallback: NativeHttpFallback;
 
     beforeEach(() => {
-        const PlatformMock = jest.fn<Platform>(() => ({
+        const PlatformMock = jest.fn(() => ({
             ready: jest.fn().mockReturnValue(Promise.resolve()),
         }));
 
-        platform = new PlatformMock();
+        platform = new PlatformMock() as any;
         cordovaHttpBackend = new NativeHttpBackend(new HTTP());
         fallbackBackend = new MockHttpBackend();
         cordovaHttpFallback = new NativeHttpFallback(
@@ -44,9 +44,7 @@ describe('NativeHttpFallback', () => {
     });
 
     it('should handle request with cordova backend in case of external request and plugin availability', done => {
-        (checkAvailability as Mock<() => boolean>).mockImplementation(
-            () => true,
-        );
+        (checkAvailability as Mock<boolean>).mockImplementation(() => true);
         spyOn(cordovaHttpBackend, 'handle').and.returnValue(
             of(new HttpResponse()),
         );
@@ -58,9 +56,7 @@ describe('NativeHttpFallback', () => {
     });
 
     it('should handle request with fallback backend in case of internal request and plugin availability', done => {
-        (checkAvailability as Mock<() => boolean>).mockImplementation(
-            () => true,
-        );
+        (checkAvailability as Mock<boolean>).mockImplementation(() => true);
         spyOn(fallbackBackend, 'handle').and.callThrough();
         const request = new HttpRequest('GET', '/some-url');
         cordovaHttpFallback.handle(request).subscribe(() => {
@@ -70,9 +66,7 @@ describe('NativeHttpFallback', () => {
     });
 
     it('should handle request with fallback backend in case of plugin unavailability', done => {
-        (checkAvailability as Mock<() => boolean>).mockImplementation(
-            () => false,
-        );
+        (checkAvailability as Mock<boolean>).mockImplementation(() => false);
         spyOn(fallbackBackend, 'handle').and.callThrough();
         const request = new HttpRequest('GET', 'http://some-url');
         cordovaHttpFallback.handle(request).subscribe(() => {

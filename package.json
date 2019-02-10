@@ -81,7 +81,9 @@
         "tsConfigFile": "tsconfig.test.json"
       }
     },
-    "setupFilesAfterEnv": ["<rootDir>/jest.init.ts"],
+    "setupFilesAfterEnv": [
+      "<rootDir>/jest.init.ts"
+    ],
     "transformIgnorePatterns": [
       "node_modules/(?!@ionic)"
     ]
