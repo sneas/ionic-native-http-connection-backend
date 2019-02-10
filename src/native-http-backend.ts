@@ -24,7 +24,7 @@ type HTTPRequestMethod =
 
 type DataSerializerType = 'json' | 'urlencoded' | 'utf8';
 
-const XSSI_PREFIX = /^\)\]\}',?\n/;
+const XSSI_PREFIX = /^\)]}',?\n/;
 
 @Injectable()
 export class NativeHttpBackend implements HttpBackend {
