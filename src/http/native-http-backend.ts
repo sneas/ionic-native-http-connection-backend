@@ -9,20 +9,12 @@ import {
     Response,
     ResponseOptions,
 } from '@angular/http';
-import { HTTP, HTTPResponse } from '@ionic-native/http';
-import { Observable } from 'rxjs/Observable';
-import { Observer } from 'rxjs/Observer';
+import { HTTP, HTTPResponse } from '@ionic-native/http/ngx';
+import { Observable, Observer } from 'rxjs';
 
 import { HTTPError } from '../http-error';
 
-type HTTPRequestMethod =
-    | 'get'
-    | 'post'
-    | 'post'
-    | 'put'
-    | 'delete'
-    | 'patch'
-    | 'head';
+type HTTPRequestMethod = 'get' | 'post' | 'put' | 'delete' | 'patch' | 'head';
 
 type DataSerializerType = 'json' | 'urlencoded';
 
@@ -56,14 +48,14 @@ export class NativeHttpConnectionD implements Connection {
         this.response = new Observable<Response>(
             (responseObserver: Observer<Response>) => {
                 const headers = req.headers.toJSON();
-                Object.keys(headers).map(function(key) {
+                Object.keys(headers).forEach(key => {
                     if (headers[key].length > 1) {
                         throw `Header ${key} contains more than one value`;
                     }
                     headers[key] = headers[key][0];
                 });
 
-                let body;
+                let body: any;
 
                 // 1 stands for ContentType.JSON. Angular doesn't export ContentType
                 if (req.detectContentTypeFromBody() === 1) {
@@ -79,7 +71,10 @@ export class NativeHttpConnectionD implements Connection {
                  * parameters are passed to Http component. Even though XMLHttpRequest automatically
                  * converts unencoded URL, NativeHTTP requires it to be always encoded.
                  */
-                const url = encodeURI(decodeURI(req.url)).replace('%252F', '%2F');
+                const url = encodeURI(decodeURI(req.url)).replace(
+                    '%252F',
+                    '%2F',
+                );
 
                 nativeHttp.setDataSerializer(
                     this.detectDataSerializerType(req),

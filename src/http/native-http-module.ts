@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { HttpModule, XHRBackend } from '@angular/http';
-import { HTTP } from '@ionic-native/http';
+import { HTTP } from '@ionic-native/http/ngx';
 
 import { NativeHttpBackendD } from './native-http-backend';
 import { NativeHttpFallbackD } from './native-http-fallback';

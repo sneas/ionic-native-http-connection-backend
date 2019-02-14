@@ -6,7 +6,7 @@ import {
     RequestOptions,
 } from '@angular/http';
 import { MockBackend } from '@angular/http/testing';
-import { HTTP } from '@ionic-native/http';
+import { HTTP } from '@ionic-native/http/ngx';
 
 import {
     NativeHttpBackendD,

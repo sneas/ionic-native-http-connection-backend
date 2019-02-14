@@ -55,10 +55,6 @@ export class AppModule {
 }
 ```
 
-### Angular <4.3
-
-[DEPRECATED.md](DEPRECATED.md)
-
 ## Contributing
 
 Contributing guidelines could be found in [CONTRIBUTING.md](CONTRIBUTING.md)
