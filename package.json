@@ -90,10 +90,10 @@
     ]
   },
   "publishConfig": {
-    "tag": "latest"
+    "tag": "ionic3-native5"
   },
   "release": {
-    "branch": "latest",
+    "branch": "ionic3-native5",
     "prepare": [
       "@semantic-release/npm",
       {
