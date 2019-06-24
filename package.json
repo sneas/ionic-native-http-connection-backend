@@ -28,34 +28,33 @@
   },
   "homepage": "https://github.com/sneas/ionic-native-http-connection-backend#readme",
   "devDependencies": {
-    "@angular/common": "^7.2.4",
-    "@angular/compiler": "^7.2.4",
-    "@angular/compiler-cli": "^7.2.4",
-    "@angular/core": "^7.2.4",
-    "@angular/forms": "^7.2.4",
-    "@angular/http": "^7.2.4",
-    "@angular/platform-browser": "^7.2.4",
-    "@ionic-native/core": "^5.0.0",
-    "@ionic-native/http": "^5.0.0",
-    "@ionic/angular": "^4.0.1",
-    "@ionic/core": "^4.0.1",
-    "@semantic-release/git": "^7.0.8",
-    "@types/jest": "^24.0.0",
-    "babel-jest": "^24.1.0",
-    "commitizen": "^3.0.5",
-    "core-js": "^2.6.4",
+    "@angular/common": "^8.0.2",
+    "@angular/compiler": "^8.0.2",
+    "@angular/compiler-cli": "^8.0.2",
+    "@angular/core": "^8.0.2",
+    "@angular/forms": "^8.0.2",
+    "@angular/platform-browser": "^8.0.2",
+    "@ionic-native/core": "^5.8.0",
+    "@ionic-native/http": "^5.8.0",
+    "@ionic/angular": "^4.5.0",
+    "@ionic/core": "^4.5.0",
+    "@semantic-release/git": "^7.0.12",
+    "@types/jest": "^24.0.15",
+    "babel-jest": "^24.8.0",
+    "commitizen": "^3.1.1",
+    "core-js": "^3.1.4",
     "cz-conventional-changelog": "^2.1.0",
-    "husky": "^1.3.1",
-    "jest": "^24.1.0",
-    "jest-config": "^24.1.0",
-    "lint-staged": "^8.1.3",
-    "prettier": "^1.16.4",
+    "husky": "^2.5.0",
+    "jest": "^24.8.0",
+    "jest-config": "^24.8.0",
+    "lint-staged": "^8.2.1",
+    "prettier": "^1.18.2",
     "rimraf": "^2.6.3",
-    "rxjs": "~6.4.0",
-    "semantic-release": "^15.13.3",
-    "ts-jest": "^23.10.5",
-    "typescript": "~3.2.4",
-    "zone.js": "^0.8.29"
+    "rxjs": "~6.5.2",
+    "semantic-release": "^15.13.16",
+    "ts-jest": "^24.0.2",
+    "typescript": "~3.4.5",
+    "zone.js": "^0.9.1"
   },
   "peerDependencies": {
     "@ionic-native/http": "^5.0.0"
@@ -112,6 +111,6 @@
     ]
   },
   "dependencies": {
-    "@angular/router": "^7.2.4"
+    "@angular/router": "^8.0.2"
   }
 }
