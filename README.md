@@ -24,39 +24,11 @@ This strategy allows developers to use Angular's `HttpClient` transparently in b
 
 ## Installation
 
-The library supports Ionic 3 and Ionic 4.
-
-### Ionic 4
-
-For projects using Ionic 4 consider
-
 ```bash
 npm install --save ionic-native-http-connection-backend
 ```
 
 Then follow instructions at https://ionicframework.com/docs/native/http/#installation
-
-### Ionic 3 with ionic-native 4
-
-For projects using Ionic 3 with ionic-native 4 consider
-
-```bash
-npm install --save ionic-native-http-connection-backend@ionic3-native4
-ionic cordova plugin add cordova-plugin-advanced-http
-npm install --save @ionic-native/http@^4.0.0
-
-```
-
-### Ionic 3 with ionic-native 5
-
-For projects using Ionic 3 with ionic-native 5 consider
-
-```bash
-npm install --save ionic-native-http-connection-backend@ionic3-native5
-ionic cordova plugin add cordova-plugin-advanced-http
-npm install --save @ionic-native/http@^5.0.0
-
-```
 
 ## Usage
 
@@ -66,7 +38,7 @@ Add `NativeHttpModule`, `NativeHttpBackend` and `NativeHttpFallback` into the ap
 import { NgModule } from '@angular/core';
 import { HttpBackend, HttpXhrBackend } from '@angular/common/http';
 import { NativeHttpModule, NativeHttpBackend, NativeHttpFallback } from 'ionic-native-http-connection-backend';
-import { Platform } from 'ionic-angular';
+import { Platform } from '@ionic/angular';
 
 @NgModule({
     declarations: [],
