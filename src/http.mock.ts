@@ -6,6 +6,13 @@ export class HTTPMock extends HTTP {
     requestResolve: (response: HTTPResponse) => void;
     requestReject: (error: HTTPError) => void;
 
+    sendRequest(): Promise<HTTPResponse> {
+        return new Promise((resolve, reject) => {
+            this.requestResolve = resolve;
+            this.requestReject = reject;
+        });
+    }
+
     post(): Promise<HTTPResponse> {
         return new Promise((resolve, reject) => {
             this.requestResolve = resolve;

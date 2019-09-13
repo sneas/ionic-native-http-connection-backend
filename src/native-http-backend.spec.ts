@@ -80,7 +80,7 @@ describe('NativeHttpBackend', () => {
             }),
         });
 
-        spyOn(http, 'post').and.returnValue(
+        spyOn(http, 'sendRequest').and.returnValue(
             Promise.resolve({
                 status: 200,
                 data: '{}',
@@ -89,16 +89,19 @@ describe('NativeHttpBackend', () => {
         );
 
         httpBackend.handle(request).subscribe(() => {
-            expect(http.post).toHaveBeenCalledWith(
+            expect(http.sendRequest).toHaveBeenCalledWith(
                 expect.anything(),
-                {
-                    a: 'b',
-                    c: 'd',
-                },
-                {
-                    headerName1: 'headerValue1',
-                    headerName2: 'headerValue2',
-                },
+                expect.objectContaining({
+                    method: 'post',
+                    body: {
+                        a: 'b',
+                        c: 'd',
+                    },
+                    headers: {
+                        headerName1: 'headerValue1',
+                        headerName2: 'headerValue2',
+                    },
+                }),
             );
             done();
         });
@@ -117,7 +120,7 @@ describe('NativeHttpBackend', () => {
             },
         );
 
-        spyOn(http, 'post').and.returnValue(
+        spyOn(http, 'sendRequest').and.returnValue(
             Promise.resolve({
                 status: 200,
                 data: '{}',
@@ -126,13 +129,15 @@ describe('NativeHttpBackend', () => {
         );
 
         httpBackend.handle(request).subscribe(() => {
-            expect(http.post).toHaveBeenCalledWith(
+            expect(http.sendRequest).toHaveBeenCalledWith(
                 expect.anything(),
-                testXmlString,
-                {
-                    headerName1: 'headerValue1',
-                    'Content-Type': textContentTypeValue,
-                },
+                expect.objectContaining({
+                    body: testXmlString,
+                    headers: {
+                        headerName1: 'headerValue1',
+                        'Content-Type': textContentTypeValue,
+                    },
+                }),
             );
             done();
         });
@@ -141,7 +146,7 @@ describe('NativeHttpBackend', () => {
     it('loves and understands array as body', done => {
         const request = new HttpRequest('POST', 'http://test.com', ['a', 'b']);
 
-        spyOn(http, 'post').and.returnValue(
+        spyOn(http, 'sendRequest').and.returnValue(
             Promise.resolve({
                 status: 200,
                 data: '{}',
@@ -149,14 +154,13 @@ describe('NativeHttpBackend', () => {
             }),
         );
 
-        spyOn(http, 'setDataSerializer');
-
         httpBackend.handle(request).subscribe(() => {
-            expect(http.setDataSerializer).toHaveBeenCalledWith('json');
-            expect(http.post).toHaveBeenCalledWith(
+            expect(http.sendRequest).toHaveBeenCalledWith(
                 expect.anything(),
-                ['a', 'b'],
-                expect.anything(),
+                expect.objectContaining({
+                    body: ['a', 'b'],
+                    serializer: 'json',
+                }),
             );
             done();
         });
@@ -170,7 +174,7 @@ describe('NativeHttpBackend', () => {
             httpParamBody,
         );
 
-        spyOn(http, 'post').and.returnValue(
+        spyOn(http, 'sendRequest').and.returnValue(
             Promise.resolve({
                 status: 200,
                 data: '{}',
@@ -178,14 +182,13 @@ describe('NativeHttpBackend', () => {
             }),
         );
 
-        spyOn(http, 'setDataSerializer');
-
         httpBackend.handle(request).subscribe(() => {
-            expect(http.setDataSerializer).toHaveBeenCalledWith('json');
-            expect(http.post).toHaveBeenCalledWith(
+            expect(http.sendRequest).toHaveBeenCalledWith(
                 expect.anything(),
-                { a: '1', b: '2' },
-                expect.anything(),
+                expect.objectContaining({
+                    body: { a: '1', b: '2' },
+                    serializer: 'json',
+                }),
             );
             done();
         });
@@ -206,7 +209,7 @@ describe('NativeHttpBackend', () => {
             },
         );
 
-        spyOn(http, 'post').and.returnValue(
+        spyOn(http, 'sendRequest').and.returnValue(
             Promise.resolve({
                 status: 200,
                 data: '{}',
@@ -214,14 +217,13 @@ describe('NativeHttpBackend', () => {
             }),
         );
 
-        spyOn(http, 'setDataSerializer');
-
         httpBackend.handle(request).subscribe(() => {
-            expect(http.setDataSerializer).toHaveBeenCalledWith('urlencoded');
-            expect(http.post).toHaveBeenCalledWith(
+            expect(http.sendRequest).toHaveBeenCalledWith(
                 expect.anything(),
-                { a: '1', b: '2' },
-                expect.anything(),
+                expect.objectContaining({
+                    body: { a: '1', b: '2' },
+                    serializer: 'urlencoded',
+                }),
             );
             done();
         });
@@ -230,7 +232,7 @@ describe('NativeHttpBackend', () => {
     it('converts HTTPResponse headers object to Headers', done => {
         const request = new HttpRequest('POST', 'http://test.com', 'a=b&c=d');
 
-        spyOn(http, 'post').and.returnValue(
+        spyOn(http, 'sendRequest').and.returnValue(
             Promise.resolve({
                 status: 200,
                 data: '{}',
@@ -255,7 +257,7 @@ describe('NativeHttpBackend', () => {
             params: new HttpParams().append('a', 'b').append('c', 'd'),
         });
 
-        spyOn(http, 'get').and.returnValue(
+        spyOn(http, 'sendRequest').and.returnValue(
             Promise.resolve({
                 status: 200,
                 data: '{}',
@@ -263,10 +265,9 @@ describe('NativeHttpBackend', () => {
         );
 
         httpBackend.handle(request).subscribe(() => {
-            expect(http.get).toBeCalledWith(
+            expect(http.sendRequest).toBeCalledWith(
                 'http://test.com?a=b&c=d',
-                expect.anything(),
-                expect.anything(),
+                expect.objectContaining({ method: 'get' }),
             );
             done();
         });
@@ -277,7 +278,7 @@ describe('NativeHttpBackend', () => {
             responseType: 'json',
         });
 
-        spyOn(http, 'get').and.returnValue(
+        spyOn(http, 'sendRequest').and.returnValue(
             Promise.resolve({
                 status: 200,
                 data: '{"a": "b"}',
@@ -297,7 +298,7 @@ describe('NativeHttpBackend', () => {
             responseType: 'json',
         });
 
-        spyOn(http, 'get').and.returnValue(
+        spyOn(http, 'sendRequest').and.returnValue(
             Promise.resolve({
                 status: 200,
                 data: '"a": "b"}',
@@ -320,7 +321,7 @@ describe('NativeHttpBackend', () => {
             responseType: 'json',
         });
 
-        spyOn(http, 'get').and.returnValue(
+        spyOn(http, 'sendRequest').and.returnValue(
             Promise.resolve({
                 status: 500,
                 data: [1, 2, 3],
@@ -343,7 +344,7 @@ describe('NativeHttpBackend', () => {
             responseType: 'text',
         });
 
-        spyOn(http, 'get').and.returnValue(
+        spyOn(http, 'sendRequest').and.returnValue(
             Promise.resolve({
                 status: 200,
                 data: 'Test response',
@@ -358,25 +359,51 @@ describe('NativeHttpBackend', () => {
             });
     });
 
-    it('should set json serializer when post json request', () => {
+    it('should set json serializer when post json request', done => {
         const request = new HttpRequest('POST', 'http://test.com', { a: 'b' });
 
-        spyOn(http, 'setDataSerializer');
+        spyOn(http, 'sendRequest').and.returnValue(
+            Promise.resolve({
+                status: 200,
+                data: '{}',
+                headers: {},
+            }),
+        );
 
-        httpBackend.handle(request).subscribe();
-        expect(http.setDataSerializer).toHaveBeenCalledWith('json');
+        httpBackend
+            .handle(request)
+            .subscribe((response: HttpResponse<string>) => {
+                expect(http.sendRequest).toBeCalledWith(
+                    expect.anything(),
+                    expect.objectContaining({ serializer: 'json' }),
+                );
+                done();
+            });
     });
 
-    it('should set urlencode serializer when post plain request', () => {
+    it('should set urlencode serializer when post plain request', done => {
         const request = new HttpRequest('POST', 'http://test.com', 'a=b');
 
-        spyOn(http, 'setDataSerializer');
+        spyOn(http, 'sendRequest').and.returnValue(
+            Promise.resolve({
+                status: 200,
+                data: '{}',
+                headers: {},
+            }),
+        );
 
-        httpBackend.handle(request).subscribe();
-        expect(http.setDataSerializer).toHaveBeenCalledWith('urlencoded');
+        httpBackend
+            .handle(request)
+            .subscribe((response: HttpResponse<string>) => {
+                expect(http.sendRequest).toBeCalledWith(
+                    expect.anything(),
+                    expect.objectContaining({ serializer: 'urlencoded' }),
+                );
+                done();
+            });
     });
 
-    it("should set utf8 serializer when sending request with header 'Content-Type: 'text/...'", () => {
+    it("should set utf8 serializer when sending request with header 'Content-Type: 'text/...'", done => {
         const request = new HttpRequest(
             'POST',
             'http://test.com',
@@ -388,10 +415,24 @@ describe('NativeHttpBackend', () => {
             },
         );
 
-        spyOn(http, 'setDataSerializer');
+        spyOn(http, 'sendRequest').and.returnValue(
+            Promise.resolve({
+                status: 200,
+                data: '{}',
+                headers: {},
+            }),
+        );
 
         httpBackend.handle(request).subscribe();
-        expect(http.setDataSerializer).toHaveBeenCalledWith('utf8');
+        httpBackend
+            .handle(request)
+            .subscribe((response: HttpResponse<string>) => {
+                expect(http.sendRequest).toBeCalledWith(
+                    expect.anything(),
+                    expect.objectContaining({ serializer: 'utf8' }),
+                );
+                done();
+            });
     });
 
     it(`uses the first request header in case it is an array`, done => {
@@ -402,7 +443,7 @@ describe('NativeHttpBackend', () => {
             }),
         });
 
-        spyOn(http, 'post').and.returnValue(
+        spyOn(http, 'sendRequest').and.returnValue(
             Promise.resolve({
                 status: 200,
                 data: '{}',
@@ -411,13 +452,14 @@ describe('NativeHttpBackend', () => {
         );
 
         httpBackend.handle(request).subscribe(() => {
-            expect(http.post).toHaveBeenCalledWith(
+            expect(http.sendRequest).toHaveBeenCalledWith(
                 expect.anything(),
-                expect.anything(),
-                {
-                    headerName1: 'header1Value1',
-                    headerName2: 'header2Value1',
-                },
+                expect.objectContaining({
+                    headers: {
+                        headerName1: 'header1Value1',
+                        headerName2: 'header2Value1',
+                    },
+                }),
             );
             done();
         });
@@ -430,7 +472,7 @@ describe('NativeHttpBackend', () => {
             'a=b&c=d',
         );
 
-        spyOn(http, 'post').and.returnValue(
+        spyOn(http, 'sendRequest').and.returnValue(
             Promise.resolve({
                 status: 200,
                 data: '{}',
@@ -439,9 +481,8 @@ describe('NativeHttpBackend', () => {
         );
 
         httpBackend.handle(request).subscribe(() => {
-            expect(http.post).toHaveBeenCalledWith(
+            expect(http.sendRequest).toHaveBeenCalledWith(
                 'http://api.com/get%20something?with=%20wierd%20variables%20',
-                expect.anything(),
                 expect.anything(),
             );
             done();
@@ -455,7 +496,7 @@ describe('NativeHttpBackend', () => {
             'a=b&c=d',
         );
 
-        spyOn(http, 'post').and.returnValue(
+        spyOn(http, 'sendRequest').and.returnValue(
             Promise.resolve({
                 status: 200,
                 data: '{}',
@@ -464,9 +505,8 @@ describe('NativeHttpBackend', () => {
         );
 
         httpBackend.handle(request).subscribe(() => {
-            expect(http.post).toHaveBeenCalledWith(
+            expect(http.sendRequest).toHaveBeenCalledWith(
                 'http://api.com/get%20something?with=%20wierd%20variables%20',
-                expect.anything(),
                 expect.anything(),
             );
             done();
@@ -480,7 +520,7 @@ describe('NativeHttpBackend', () => {
             'a=b&c=d',
         );
 
-        spyOn(http, 'post').and.returnValue(
+        spyOn(http, 'sendRequest').and.returnValue(
             Promise.resolve({
                 status: 200,
                 data: '{}',
@@ -489,9 +529,8 @@ describe('NativeHttpBackend', () => {
         );
 
         httpBackend.handle(request).subscribe(() => {
-            expect(http.post).toHaveBeenCalledWith(
+            expect(http.sendRequest).toHaveBeenCalledWith(
                 'http://api.com/test?reserved=%3B%2C%2F%3F%3A%40%26%3D%2B%24%23',
-                expect.anything(),
                 expect.anything(),
             );
             done();
