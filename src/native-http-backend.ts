@@ -24,6 +24,7 @@ type HTTPRequestMethod =
 
 type DataSerializerType = 'json' | 'urlencoded' | 'utf8';
 
+type SendRequestOptions = Parameters<typeof HTTP.prototype.sendRequest>[1];
 const XSSI_PREFIX = /^\)]}',?\n/;
 
 @Injectable()
@@ -148,9 +149,13 @@ export class NativeHttpBackend implements HttpBackend {
         });
     }
 
-    private buildRequestOptions(req: HttpRequest<any>, requestMethod, headers) {
+    private buildRequestOptions(
+        req: HttpRequest<any>,
+        requestMethod,
+        headers,
+    ): SendRequestOptions {
         let serializerType = this.detectDataSerializerType(req);
-        const requestOptions: any = {
+        const requestOptions: SendRequestOptions = {
             method: requestMethod,
             headers: { ...headers },
             serializer: serializerType,
