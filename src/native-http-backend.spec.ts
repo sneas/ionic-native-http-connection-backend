@@ -93,7 +93,7 @@ describe('NativeHttpBackend', () => {
                 expect.anything(),
                 expect.objectContaining({
                     method: 'post',
-                    body: {
+                    data: {
                         a: 'b',
                         c: 'd',
                     },
@@ -132,7 +132,7 @@ describe('NativeHttpBackend', () => {
             expect(http.sendRequest).toHaveBeenCalledWith(
                 expect.anything(),
                 expect.objectContaining({
-                    body: testXmlString,
+                    data: testXmlString,
                     headers: {
                         headerName1: 'headerValue1',
                         'Content-Type': textContentTypeValue,
@@ -158,7 +158,7 @@ describe('NativeHttpBackend', () => {
             expect(http.sendRequest).toHaveBeenCalledWith(
                 expect.anything(),
                 expect.objectContaining({
-                    body: ['a', 'b'],
+                    data: ['a', 'b'],
                     serializer: 'json',
                 }),
             );
@@ -186,7 +186,7 @@ describe('NativeHttpBackend', () => {
             expect(http.sendRequest).toHaveBeenCalledWith(
                 expect.anything(),
                 expect.objectContaining({
-                    body: { a: '1', b: '2' },
+                    data: { a: '1', b: '2' },
                     serializer: 'json',
                 }),
             );
@@ -221,7 +221,7 @@ describe('NativeHttpBackend', () => {
             expect(http.sendRequest).toHaveBeenCalledWith(
                 expect.anything(),
                 expect.objectContaining({
-                    body: { a: '1', b: '2' },
+                    data: { a: '1', b: '2' },
                     serializer: 'urlencoded',
                 }),
             );
@@ -266,8 +266,11 @@ describe('NativeHttpBackend', () => {
 
         httpBackend.handle(request).subscribe(() => {
             expect(http.sendRequest).toBeCalledWith(
-                'http://test.com?a=b&c=d',
-                expect.objectContaining({ method: 'get' }),
+                'http://test.com',
+                expect.objectContaining({
+                    method: 'get',
+                    params: { a: 'b', c: 'd' },
+                }),
             );
             done();
         });
@@ -533,6 +536,71 @@ describe('NativeHttpBackend', () => {
                 'http://api.com/test?reserved=%3B%2C%2F%3F%3A%40%26%3D%2B%24%23',
                 expect.anything(),
             );
+            done();
+        });
+    });
+
+    it(`should pass the responseType to the native HTTP plugin`, done => {
+        const request = new HttpRequest('GET', 'http://test.com', {
+            responseType: 'blob',
+        });
+
+        spyOn(http, 'sendRequest').and.returnValue(
+            Promise.resolve({
+                status: 200,
+                data: {},
+            }),
+        );
+        httpBackend.handle(request).subscribe(() => {
+            expect(http.sendRequest).toHaveBeenCalledWith(
+                expect.anything(),
+                expect.objectContaining({ responseType: 'blob' }),
+            );
+            done();
+        });
+    });
+
+    it(`should only use native HTTP plugin "params" option for get requests`, done => {
+        const request = new HttpRequest('GET', 'http://test.com', {
+            params: new HttpParams().append('a', '1').append('b', '2'),
+        });
+
+        const spy = spyOn(http, 'sendRequest').and.returnValue(
+            Promise.resolve({
+                status: 200,
+                data: {},
+            }),
+        );
+        httpBackend.handle(request).subscribe(() => {
+            expect(http.sendRequest).toHaveBeenCalledWith('http://test.com', {
+                params: { a: '1', b: '2' },
+                method: 'get',
+                serializer: 'urlencoded',
+                headers: {},
+            });
+            done();
+        });
+    });
+
+    it(`should only use native HTTP plugin "data" option for post requests`, done => {
+        const request = new HttpRequest('POST', 'http://test.com', {
+            a: '1',
+            b: '2',
+        });
+
+        const spy = spyOn(http, 'sendRequest').and.returnValue(
+            Promise.resolve({
+                status: 200,
+                data: {},
+            }),
+        );
+        httpBackend.handle(request).subscribe(() => {
+            expect(http.sendRequest).toHaveBeenCalledWith('http://test.com', {
+                data: { a: '1', b: '2' },
+                method: 'post',
+                serializer: 'json',
+                headers: {},
+            });
             done();
         });
     });

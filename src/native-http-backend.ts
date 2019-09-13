@@ -25,7 +25,10 @@ type HTTPRequestMethod =
 type DataSerializerType = 'json' | 'urlencoded' | 'utf8';
 
 type SendRequestOptions = Parameters<typeof HTTP.prototype.sendRequest>[1];
+
 const XSSI_PREFIX = /^\)]}',?\n/;
+
+const DATA_REQUEST_METHODS = ['POST', 'PUT', 'PATCH'];
 
 @Injectable()
 export class NativeHttpBackend implements HttpBackend {
@@ -58,7 +61,7 @@ export class NativeHttpBackend implements HttpBackend {
              * parameters are passed to Http component. Even though XMLHttpRequest automatically
              * converts not encoded URL, NativeHTTP requires it to be always encoded.
              */
-            const url = encodeURI(decodeURI(req.urlWithParams)).replace(
+            const url = encodeURI(decodeURI(req.url)).replace(
                 /%253B|%252C|%252F|%253F|%253A|%2540|%2526|%253D|%252B|%2524|%2523/g, // ;,/?:@&=+$#
                 substring => '%' + substring.slice(3),
             );
@@ -159,11 +162,14 @@ export class NativeHttpBackend implements HttpBackend {
             method: requestMethod,
             headers: { ...headers },
             serializer: serializerType,
-            body: this.convertBody(req.body, serializerType),
         };
-
         if (req.responseType !== 'json') {
             requestOptions.responseType = req.responseType;
+        }
+        if (DATA_REQUEST_METHODS.indexOf(requestMethod.toUpperCase()) !== -1) {
+            requestOptions.data = this.convertBody(req.body, serializerType);
+        } else {
+            requestOptions.params = this.convertHttpParams(req.params);
         }
         return requestOptions;
     }
@@ -182,12 +188,17 @@ export class NativeHttpBackend implements HttpBackend {
         } else if (Array.isArray(body)) {
             result = body;
         } else if (body instanceof HttpParams) {
-            result = {};
-            for (let key of body.keys()) {
-                result[key] = body.get(key);
-            }
+            result = this.convertHttpParams(body);
         } else {
             result = { ...body };
+        }
+        return result;
+    }
+
+    private convertHttpParams(params: HttpParams): { [x: string]: any } {
+        const result = {};
+        for (let key of params.keys()) {
+            result[key] = params.get(key);
         }
         return result;
     }
