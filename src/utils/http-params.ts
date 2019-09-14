@@ -1,14 +1,7 @@
 import { HttpParams } from '@angular/common/http';
+import { collectionToObject } from './collection-to-object';
 
 export type HttpParamsObject = { [x: string]: string };
-
-export const httpParamsToObject = (params: HttpParams): HttpParamsObject => {
-    const result = {};
-    for (let key of params.keys()) {
-        result[key] = params.get(key);
-    }
-    return result;
-};
 
 export const queryToObject = (query: string): HttpParamsObject => {
     if (!query) {
@@ -32,7 +25,7 @@ export const bodyToObject = (
     if (typeof body === 'string') {
         return queryToObject(body);
     } else if (body instanceof HttpParams) {
-        return httpParamsToObject(body);
+        return collectionToObject(body);
     } else {
         return body;
     }

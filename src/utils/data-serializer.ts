@@ -1,10 +1,10 @@
 import { HttpRequest } from '@angular/common/http';
 
-export type DataSerializerType = 'json' | 'urlencoded' | 'utf8';
+export type DataSerializer = 'json' | 'urlencoded' | 'utf8';
 
-export const getSerializerTypeByContentType = (
+export const getSerializerByContentType = (
     contentType: string = '',
-): DataSerializerType => {
+): DataSerializer => {
     contentType = contentType.toLowerCase();
 
     if (contentType.indexOf('text/') === 0) {
@@ -22,23 +22,10 @@ export const getSerializerTypeByContentType = (
     return null;
 };
 
-export const detectDataSerializerType = (
-    req: HttpRequest<any>,
-): DataSerializerType => {
-    const serializerByContentType = getSerializerTypeByContentType(
-        req.headers.get('content-type') || '',
-    );
+export const guessSerializer = (req: HttpRequest<any>): DataSerializer => {
+    const method = req.method.toLowerCase();
 
-    if (serializerByContentType !== null) {
-        return serializerByContentType;
-    }
-
-    // No Content-Type present try to guess it by method & body
-    if (
-        req.method.toLowerCase() === 'post' ||
-        req.method.toLowerCase() === 'put' ||
-        req.method.toLowerCase() === 'patch'
-    ) {
+    if (method === 'post' || method === 'put' || method === 'patch') {
         // 1 stands for ContentType.JSON. Angular doesn't export ContentType
         if (typeof req.body !== 'string') {
             return 'json';
@@ -46,4 +33,11 @@ export const detectDataSerializerType = (
     }
 
     return 'urlencoded';
+};
+
+export const detectSerializer = (req: HttpRequest<any>): DataSerializer => {
+    return (
+        getSerializerByContentType(req.headers.get('content-type') || '') ||
+        guessSerializer(req)
+    );
 };

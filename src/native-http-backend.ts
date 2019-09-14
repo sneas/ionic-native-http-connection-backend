@@ -5,15 +5,16 @@ import {
     HttpHeaders,
     HttpRequest,
     HttpResponse,
-    HttpParams,
 } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { HTTP, HTTPResponse } from '@ionic-native/http/ngx';
 import { Observable, Observer } from 'rxjs';
 
 import { HTTPError } from './http-error';
-import { detectDataSerializerType } from './utils/data-serializer';
-import { bodyToObject, httpParamsToObject } from './utils/http-params';
+import { detectSerializer } from './utils/data-serializer';
+import { paramsOrData } from './utils/request-options';
+import { collectionToObject } from './utils/collection-to-object';
+import { detectResponseType } from './utils/response-type';
 
 type HTTPRequestMethod =
     | 'get'
@@ -24,13 +25,7 @@ type HTTPRequestMethod =
     | 'patch'
     | 'head';
 
-type DataSerializerType = 'json' | 'urlencoded' | 'utf8';
-
-type SendRequestOptions = Parameters<typeof HTTP.prototype.sendRequest>[1];
-
 const XSSI_PREFIX = /^\)]}',?\n/;
-
-const DATA_REQUEST_METHODS = ['POST', 'PUT', 'PATCH'];
 
 @Injectable()
 export class NativeHttpBackend implements HttpBackend {
@@ -51,13 +46,6 @@ export class NativeHttpBackend implements HttpBackend {
         }
 
         return new Observable((observer: Observer<HttpEvent<any>>) => {
-            const headers = new Map<string, string>();
-            req.headers.keys().map(function(key) {
-                headers[key] = req.headers.get(key);
-            });
-
-            const requestMethod = req.method.toLowerCase() as HTTPRequestMethod;
-
             /**
              * Request contains either encoded either decoded URL depended on the way
              * parameters are passed to Http component. Even though XMLHttpRequest automatically
@@ -133,10 +121,13 @@ export class NativeHttpBackend implements HttpBackend {
             };
 
             this.nativeHttp
-                .sendRequest(
-                    url,
-                    this.buildRequestOptions(req, requestMethod, headers),
-                )
+                .sendRequest(url, {
+                    method: req.method.toLowerCase() as HTTPRequestMethod,
+                    headers: collectionToObject(req.headers),
+                    serializer: detectSerializer(req),
+                    responseType: detectResponseType(req.responseType),
+                    ...paramsOrData(req),
+                })
                 .then((response: HTTPResponse) => {
                     fireResponse({
                         body: response.data,
@@ -152,28 +143,5 @@ export class NativeHttpBackend implements HttpBackend {
                     });
                 });
         });
-    }
-
-    private buildRequestOptions(
-        req: HttpRequest<any>,
-        requestMethod,
-        headers,
-    ): SendRequestOptions {
-        let serializerType = detectDataSerializerType(req);
-        const requestOptions: SendRequestOptions = {
-            method: requestMethod,
-            headers: { ...headers },
-            serializer: serializerType,
-        };
-        if (req.responseType !== 'json') {
-            requestOptions.responseType = req.responseType;
-        }
-        if (DATA_REQUEST_METHODS.indexOf(requestMethod.toUpperCase()) !== -1) {
-            requestOptions.data =
-                serializerType === 'utf8' ? req.body : bodyToObject(req.body);
-        } else {
-            requestOptions.params = httpParamsToObject(req.params);
-        }
-        return requestOptions;
     }
 }
