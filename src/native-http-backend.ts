@@ -13,6 +13,7 @@ import { Observable, Observer } from 'rxjs';
 
 import { HTTPError } from './http-error';
 import { detectDataSerializerType } from './utils/data-serializer';
+import { bodyToObject, httpParamsToObject } from './utils/http-params';
 
 type HTTPRequestMethod =
     | 'get'
@@ -168,55 +169,11 @@ export class NativeHttpBackend implements HttpBackend {
             requestOptions.responseType = req.responseType;
         }
         if (DATA_REQUEST_METHODS.indexOf(requestMethod.toUpperCase()) !== -1) {
-            requestOptions.data = this.convertBody(req.body, serializerType);
+            requestOptions.data =
+                serializerType === 'utf8' ? req.body : bodyToObject(req.body);
         } else {
-            requestOptions.params = this.convertHttpParams(req.params);
+            requestOptions.params = httpParamsToObject(req.params);
         }
         return requestOptions;
-    }
-
-    private convertBody(
-        body: object | string | HttpParams,
-        serializerType: DataSerializerType,
-    ): { [x: string]: any } {
-        let result;
-
-        // if serializer utf8 it means body content type (text/...) should be string
-        if (serializerType === 'utf8') {
-            result = body;
-        } else if (typeof body === 'string') {
-            result = this.getBodyParams(body);
-        } else if (Array.isArray(body)) {
-            result = body;
-        } else if (body instanceof HttpParams) {
-            result = this.convertHttpParams(body);
-        } else {
-            result = { ...body };
-        }
-        return result;
-    }
-
-    private convertHttpParams(params: HttpParams): { [x: string]: any } {
-        const result = {};
-        for (let key of params.keys()) {
-            result[key] = params.get(key);
-        }
-        return result;
-    }
-
-    private getBodyParams(query: string) {
-        if (!query) {
-            return {};
-        }
-
-        return (/^[?#]/.test(query) ? query.slice(1) : query)
-            .split('&')
-            .reduce((params: { [name: string]: string }, param) => {
-                let [key, value] = param.split('=');
-                params[key] = value
-                    ? decodeURIComponent(value.replace(/\+/g, ' '))
-                    : '';
-                return params;
-            }, {});
     }
 }
