@@ -101,10 +101,10 @@
     ]
   },
   "publishConfig": {
-    "tag": "latest"
+    "tag": "master"
   },
   "release": {
-    "branch": "latest",
+    "branch": "master",
     "prepare": [
       "@semantic-release/npm",
       {

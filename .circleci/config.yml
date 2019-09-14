@@ -38,4 +38,4 @@ workflows:
             - test
           filters:
             branches:
-              only: latest
+              only: master
