@@ -24,7 +24,11 @@ type HTTPRequestMethod =
 
 type DataSerializerType = 'json' | 'urlencoded' | 'utf8';
 
+type SendRequestOptions = Parameters<typeof HTTP.prototype.sendRequest>[1];
+
 const XSSI_PREFIX = /^\)]}',?\n/;
+
+const DATA_REQUEST_METHODS = ['POST', 'PUT', 'PATCH'];
 
 @Injectable()
 export class NativeHttpBackend implements HttpBackend {
@@ -50,25 +54,6 @@ export class NativeHttpBackend implements HttpBackend {
                 headers[key] = req.headers.get(key);
             });
 
-            let body;
-
-            // if serializer utf8 it means body content type (text/...) should be string
-            if (this.getSerializerTypeByContentType(req) === 'utf8') {
-                body = req.body;
-            } else if (typeof req.body === 'string') {
-                body = this.getBodyParams(req.body);
-            } else if (Array.isArray(req.body)) {
-                body = req.body;
-            } else if (req.body instanceof HttpParams) {
-                let result = {};
-                for (let key of req.body.keys()) {
-                    result[key] = req.body.get(key);
-                }
-                body = result;
-            } else {
-                body = { ...req.body };
-            }
-
             const requestMethod = req.method.toLowerCase() as HTTPRequestMethod;
 
             /**
@@ -76,7 +61,7 @@ export class NativeHttpBackend implements HttpBackend {
              * parameters are passed to Http component. Even though XMLHttpRequest automatically
              * converts not encoded URL, NativeHTTP requires it to be always encoded.
              */
-            const url = encodeURI(decodeURI(req.urlWithParams)).replace(
+            const url = encodeURI(decodeURI(req.url)).replace(
                 /%253B|%252C|%252F|%253F|%253A|%2540|%2526|%253D|%252B|%2524|%2523/g, // ;,/?:@&=+$#
                 substring => '%' + substring.slice(3),
             );
@@ -145,11 +130,11 @@ export class NativeHttpBackend implements HttpBackend {
                 }
             };
 
-            this.nativeHttp.setDataSerializer(
-                this.detectDataSerializerType(req),
-            );
-
-            this.nativeHttp[requestMethod](url, body, { ...headers })
+            this.nativeHttp
+                .sendRequest(
+                    url,
+                    this.buildRequestOptions(req, requestMethod, headers),
+                )
                 .then((response: HTTPResponse) => {
                     fireResponse({
                         body: response.data,
@@ -165,6 +150,57 @@ export class NativeHttpBackend implements HttpBackend {
                     });
                 });
         });
+    }
+
+    private buildRequestOptions(
+        req: HttpRequest<any>,
+        requestMethod,
+        headers,
+    ): SendRequestOptions {
+        let serializerType = this.detectDataSerializerType(req);
+        const requestOptions: SendRequestOptions = {
+            method: requestMethod,
+            headers: { ...headers },
+            serializer: serializerType,
+        };
+        if (req.responseType !== 'json') {
+            requestOptions.responseType = req.responseType;
+        }
+        if (DATA_REQUEST_METHODS.indexOf(requestMethod.toUpperCase()) !== -1) {
+            requestOptions.data = this.convertBody(req.body, serializerType);
+        } else {
+            requestOptions.params = this.convertHttpParams(req.params);
+        }
+        return requestOptions;
+    }
+
+    private convertBody(
+        body: object | string | HttpParams,
+        serializerType: DataSerializerType,
+    ): { [x: string]: any } {
+        let result;
+
+        // if serializer utf8 it means body content type (text/...) should be string
+        if (serializerType === 'utf8') {
+            result = body;
+        } else if (typeof body === 'string') {
+            result = this.getBodyParams(body);
+        } else if (Array.isArray(body)) {
+            result = body;
+        } else if (body instanceof HttpParams) {
+            result = this.convertHttpParams(body);
+        } else {
+            result = { ...body };
+        }
+        return result;
+    }
+
+    private convertHttpParams(params: HttpParams): { [x: string]: any } {
+        const result = {};
+        for (let key of params.keys()) {
+            result[key] = params.get(key);
+        }
+        return result;
     }
 
     private getSerializerTypeByContentType(
