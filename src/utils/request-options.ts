@@ -17,14 +17,16 @@ export const paramsOrData = (
     }
 
     if (
-        (req.headers.get('content-type') || '').toLowerCase().indexOf('text/')
+        (req.headers.get('content-type') || '')
+            .toLowerCase()
+            .indexOf('text/') === 0
     ) {
         return {
-            params: req.body,
+            data: req.body,
         };
     }
 
     return {
-        params: bodyToObject(req.body),
+        data: bodyToObject(req.body),
     };
 };

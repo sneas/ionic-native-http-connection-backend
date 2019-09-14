@@ -577,6 +577,7 @@ describe('NativeHttpBackend', () => {
                 method: 'get',
                 serializer: 'urlencoded',
                 headers: {},
+                responseType: 'text',
             });
             done();
         });
@@ -600,6 +601,7 @@ describe('NativeHttpBackend', () => {
                 method: 'post',
                 serializer: 'json',
                 headers: {},
+                responseType: 'text',
             });
             done();
         });
