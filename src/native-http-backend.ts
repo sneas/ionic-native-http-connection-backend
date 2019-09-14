@@ -12,6 +12,7 @@ import { HTTP, HTTPResponse } from '@ionic-native/http/ngx';
 import { Observable, Observer } from 'rxjs';
 
 import { HTTPError } from './http-error';
+import { detectDataSerializerType } from './utils/data-serializer';
 
 type HTTPRequestMethod =
     | 'get'
@@ -157,7 +158,7 @@ export class NativeHttpBackend implements HttpBackend {
         requestMethod,
         headers,
     ): SendRequestOptions {
-        let serializerType = this.detectDataSerializerType(req);
+        let serializerType = detectDataSerializerType(req);
         const requestOptions: SendRequestOptions = {
             method: requestMethod,
             headers: { ...headers },
@@ -201,54 +202,6 @@ export class NativeHttpBackend implements HttpBackend {
             result[key] = params.get(key);
         }
         return result;
-    }
-
-    private getSerializerTypeByContentType(
-        req: HttpRequest<any>,
-    ): DataSerializerType {
-        const reqContentType = (
-            req.headers.get('content-type') || ''
-        ).toLocaleLowerCase();
-
-        if (reqContentType.indexOf('text/') === 0) {
-            return 'utf8';
-        }
-
-        if (reqContentType.indexOf('application/json') === 0) {
-            return 'json';
-        }
-
-        if (reqContentType.indexOf('application/x-www-form-urlencoded') === 0) {
-            return 'urlencoded';
-        }
-
-        return null;
-    }
-
-    private detectDataSerializerType(
-        req: HttpRequest<any>,
-    ): DataSerializerType {
-        const serializerByContentType = this.getSerializerTypeByContentType(
-            req,
-        );
-
-        if (serializerByContentType !== null) {
-            return serializerByContentType;
-        }
-
-        // No Content-Type present try to gess it by method & body
-        if (
-            req.method.toLowerCase() === 'post' ||
-            req.method.toLowerCase() === 'put' ||
-            req.method.toLowerCase() === 'patch'
-        ) {
-            // 1 stands for ContentType.JSON. Angular doesn't export ContentType
-            if (typeof req.body !== 'string') {
-                return 'json';
-            }
-        }
-
-        return 'urlencoded';
     }
 
     private getBodyParams(query: string) {
