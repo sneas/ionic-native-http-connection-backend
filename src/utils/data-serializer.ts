@@ -26,7 +26,6 @@ export const guessSerializer = (req: HttpRequest<any>): DataSerializer => {
     const method = req.method.toLowerCase();
 
     if (method === 'post' || method === 'put' || method === 'patch') {
-        // 1 stands for ContentType.JSON. Angular doesn't export ContentType
         if (typeof req.body !== 'string') {
             return 'json';
         }

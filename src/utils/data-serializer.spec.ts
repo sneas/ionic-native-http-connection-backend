@@ -1,4 +1,9 @@
-import { getSerializerByContentType } from './data-serializer';
+import {
+    detectSerializer,
+    getSerializerByContentType,
+    guessSerializer,
+} from './data-serializer';
+import { HttpHeaders, HttpRequest } from '@angular/common/http';
 
 describe('getSerializerTypeByContentType', () => {
     it('should detect utf8 by text/', () => {
@@ -17,5 +22,47 @@ describe('getSerializerTypeByContentType', () => {
 
     it('should give up sometimes', () => {
         expect(getSerializerByContentType('something/unexpected')).toBe(null);
+    });
+});
+
+describe('guessSerializer', () => {
+    it('should predict json serializer', () => {
+        expect(
+            guessSerializer(
+                new HttpRequest<any>('POST', 'http://test.com', {
+                    a: 'b',
+                }),
+            ),
+        ).toBe('json');
+    });
+
+    it('should predict urlencoded serializer', () => {
+        expect(
+            guessSerializer(
+                new HttpRequest<any>('POST', 'http://test.com', 'a=b'),
+            ),
+        ).toBe('urlencoded');
+    });
+});
+
+describe('detectSerializer', () => {
+    it('should detect serializer based on content type', () => {
+        expect(
+            detectSerializer(
+                new HttpRequest<any>('POST', 'http://test.com', 'a=b', {
+                    headers: new HttpHeaders({
+                        'content-type': 'text/plain',
+                    }),
+                }),
+            ),
+        ).toBe('utf8');
+    });
+
+    it('should guess serializer', () => {
+        expect(
+            detectSerializer(
+                new HttpRequest<any>('POST', 'http://test.com', 'a=b'),
+            ),
+        ).toBe('urlencoded');
     });
 });
