@@ -5,8 +5,8 @@ import {
     HttpHeaders,
     HttpRequest,
     HttpResponse,
+    HttpParams,
 } from '@angular/common/http';
-import { HttpJsonParseError } from '@angular/common/http/src/response';
 import { Injectable } from '@angular/core';
 import { HTTP, HTTPResponse } from '@ionic-native/http/ngx';
 import { Observable, Observer } from 'rxjs';
@@ -59,6 +59,12 @@ export class NativeHttpBackend implements HttpBackend {
                 body = this.getBodyParams(req.body);
             } else if (Array.isArray(req.body)) {
                 body = req.body;
+            } else if (req.body instanceof HttpParams) {
+                let result = {};
+                for (let key of req.body.keys()) {
+                    result[key] = req.body.get(key);
+                }
+                body = result;
             } else {
                 body = { ...req.body };
             }
@@ -109,7 +115,7 @@ export class NativeHttpBackend implements HttpBackend {
                             // Even though the response status was 2xx, this is still an error.
                             ok = false;
                             // The parse error contains the text of the body that failed to parse.
-                            body = { error, text: body } as HttpJsonParseError;
+                            body = { error, text: body };
                         }
                     }
                 }
@@ -174,6 +180,10 @@ export class NativeHttpBackend implements HttpBackend {
 
         if (reqContentType.indexOf('application/json') === 0) {
             return 'json';
+        }
+
+        if (reqContentType.indexOf('application/x-www-form-urlencoded') === 0) {
+            return 'urlencoded';
         }
 
         return null;

@@ -162,6 +162,71 @@ describe('NativeHttpBackend', () => {
         });
     });
 
+    it('loves and understands http-params as body', done => {
+        const httpParamBody = new HttpParams().set('a', '1').set('b', '2');
+        const request = new HttpRequest(
+            'POST',
+            'http://test.com',
+            httpParamBody,
+        );
+
+        spyOn(http, 'post').and.returnValue(
+            Promise.resolve({
+                status: 200,
+                data: '{}',
+                headers: {},
+            }),
+        );
+
+        spyOn(http, 'setDataSerializer');
+
+        httpBackend.handle(request).subscribe(() => {
+            expect(http.setDataSerializer).toHaveBeenCalledWith('json');
+            expect(http.post).toHaveBeenCalledWith(
+                expect.anything(),
+                { a: '1', b: '2' },
+                expect.anything(),
+            );
+            done();
+        });
+    });
+
+    it('uses urlencoded serialization for corresponding content type and http-param body', done => {
+        const httpParamBody = new HttpParams()
+            .append('a', '1')
+            .append('b', '2');
+        const request = new HttpRequest(
+            'POST',
+            'http://test.com',
+            httpParamBody,
+            {
+                headers: new HttpHeaders({
+                    'Content-Type': ['application/x-www-form-urlencoded'],
+                }),
+            },
+        );
+
+        spyOn(http, 'post').and.returnValue(
+            Promise.resolve({
+                status: 200,
+                data: '{}',
+                headers: {},
+            }),
+        );
+
+        spyOn(http, 'setDataSerializer');
+
+        httpBackend.handle(request).subscribe(() => {
+            expect(http.setDataSerializer).toHaveBeenCalledWith('urlencoded');
+            expect(http.post).toHaveBeenCalledWith(
+                expect.anything(),
+                { a: '1', b: '2' },
+                expect.anything(),
+            );
+            done();
+        });
+    });
+
     it('converts HTTPResponse headers object to Headers', done => {
         const request = new HttpRequest('POST', 'http://test.com', 'a=b&c=d');
 

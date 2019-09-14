@@ -38,7 +38,7 @@ Add `NativeHttpModule`, `NativeHttpBackend` and `NativeHttpFallback` into the ap
 import { NgModule } from '@angular/core';
 import { HttpBackend, HttpXhrBackend } from '@angular/common/http';
 import { NativeHttpModule, NativeHttpBackend, NativeHttpFallback } from 'ionic-native-http-connection-backend';
-import { Platform } from 'ionic-angular';
+import { Platform } from '@ionic/angular';
 
 @NgModule({
     declarations: [],

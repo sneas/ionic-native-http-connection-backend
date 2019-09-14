@@ -25,3 +25,15 @@ All other commit types will trigger no new release.
 The project follows [test-first](http://www.extremeprogramming.org/rules/testfirst.html) approach. Please apply code changes alongside with unit tests.
 
 Tests run with `npm test` command.
+
+## Ionic 3
+
+The project accepts only bugfixes for Ionic 3.
+
+### Ionic 3 with ionic-native 4
+
+For fixes on Ionic 3 with ionic-native 4 use `ionic3-native4` branch.
+
+### Ionic 3 with ionic-native 5
+
+For fixes on Ionic 3 with ionic-native 5 use `ionic3-native5` branch.
