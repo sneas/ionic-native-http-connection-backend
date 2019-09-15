@@ -5,13 +5,16 @@ import {
     HttpHeaders,
     HttpRequest,
     HttpResponse,
-    HttpParams,
 } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { HTTP, HTTPResponse } from '@ionic-native/http/ngx';
 import { Observable, Observer } from 'rxjs';
 
 import { HTTPError } from './http-error';
+import { detectSerializer } from './utils/data-serializer';
+import { paramsOrData } from './utils/request-options';
+import { collectionToObject } from './utils/collection-to-object';
+import { detectResponseType } from './utils/response-type';
 
 type HTTPRequestMethod =
     | 'get'
@@ -21,8 +24,6 @@ type HTTPRequestMethod =
     | 'delete'
     | 'patch'
     | 'head';
-
-type DataSerializerType = 'json' | 'urlencoded' | 'utf8';
 
 const XSSI_PREFIX = /^\)]}',?\n/;
 
@@ -45,38 +46,12 @@ export class NativeHttpBackend implements HttpBackend {
         }
 
         return new Observable((observer: Observer<HttpEvent<any>>) => {
-            const headers = new Map<string, string>();
-            req.headers.keys().map(function(key) {
-                headers[key] = req.headers.get(key);
-            });
-
-            let body;
-
-            // if serializer utf8 it means body content type (text/...) should be string
-            if (this.getSerializerTypeByContentType(req) === 'utf8') {
-                body = req.body;
-            } else if (typeof req.body === 'string') {
-                body = this.getBodyParams(req.body);
-            } else if (Array.isArray(req.body)) {
-                body = req.body;
-            } else if (req.body instanceof HttpParams) {
-                let result = {};
-                for (let key of req.body.keys()) {
-                    result[key] = req.body.get(key);
-                }
-                body = result;
-            } else {
-                body = { ...req.body };
-            }
-
-            const requestMethod = req.method.toLowerCase() as HTTPRequestMethod;
-
             /**
              * Request contains either encoded either decoded URL depended on the way
              * parameters are passed to Http component. Even though XMLHttpRequest automatically
              * converts not encoded URL, NativeHTTP requires it to be always encoded.
              */
-            const url = encodeURI(decodeURI(req.urlWithParams)).replace(
+            const url = encodeURI(decodeURI(req.url)).replace(
                 /%253B|%252C|%252F|%253F|%253A|%2540|%2526|%253D|%252B|%2524|%2523/g, // ;,/?:@&=+$#
                 substring => '%' + substring.slice(3),
             );
@@ -145,11 +120,14 @@ export class NativeHttpBackend implements HttpBackend {
                 }
             };
 
-            this.nativeHttp.setDataSerializer(
-                this.detectDataSerializerType(req),
-            );
-
-            this.nativeHttp[requestMethod](url, body, { ...headers })
+            this.nativeHttp
+                .sendRequest(url, {
+                    method: req.method.toLowerCase() as HTTPRequestMethod,
+                    headers: collectionToObject(req.headers),
+                    serializer: detectSerializer(req),
+                    responseType: detectResponseType(req.responseType),
+                    ...paramsOrData(req),
+                })
                 .then((response: HTTPResponse) => {
                     fireResponse({
                         body: response.data,
@@ -165,69 +143,5 @@ export class NativeHttpBackend implements HttpBackend {
                     });
                 });
         });
-    }
-
-    private getSerializerTypeByContentType(
-        req: HttpRequest<any>,
-    ): DataSerializerType {
-        const reqContentType = (
-            req.headers.get('content-type') || ''
-        ).toLocaleLowerCase();
-
-        if (reqContentType.indexOf('text/') === 0) {
-            return 'utf8';
-        }
-
-        if (reqContentType.indexOf('application/json') === 0) {
-            return 'json';
-        }
-
-        if (reqContentType.indexOf('application/x-www-form-urlencoded') === 0) {
-            return 'urlencoded';
-        }
-
-        return null;
-    }
-
-    private detectDataSerializerType(
-        req: HttpRequest<any>,
-    ): DataSerializerType {
-        const serializerByContentType = this.getSerializerTypeByContentType(
-            req,
-        );
-
-        if (serializerByContentType !== null) {
-            return serializerByContentType;
-        }
-
-        // No Content-Type present try to gess it by method & body
-        if (
-            req.method.toLowerCase() === 'post' ||
-            req.method.toLowerCase() === 'put' ||
-            req.method.toLowerCase() === 'patch'
-        ) {
-            // 1 stands for ContentType.JSON. Angular doesn't export ContentType
-            if (typeof req.body !== 'string') {
-                return 'json';
-            }
-        }
-
-        return 'urlencoded';
-    }
-
-    private getBodyParams(query: string) {
-        if (!query) {
-            return {};
-        }
-
-        return (/^[?#]/.test(query) ? query.slice(1) : query)
-            .split('&')
-            .reduce((params: { [name: string]: string }, param) => {
-                let [key, value] = param.split('=');
-                params[key] = value
-                    ? decodeURIComponent(value.replace(/\+/g, ' '))
-                    : '';
-                return params;
-            }, {});
     }
 }

@@ -35,8 +35,8 @@
     "@angular/platform-browser": "^8.0.2",
     "@commitlint/cli": "^8.1.0",
     "@commitlint/config-conventional": "^8.1.0",
-    "@ionic-native/core": "^5.8.0",
-    "@ionic-native/http": "^5.8.0",
+    "@ionic-native/core": "^5.12.0",
+    "@ionic-native/http": "^5.12.0",
     "@ionic/angular": "^4.5.0",
     "@ionic/core": "^4.5.0",
     "@semantic-release/git": "^7.0.12",
@@ -58,7 +58,7 @@
     "zone.js": "^0.9.1"
   },
   "peerDependencies": {
-    "@ionic-native/http": "^5.0.0"
+    "@ionic-native/http": "^5.12.0"
   },
   "config": {
     "commitizen": {
