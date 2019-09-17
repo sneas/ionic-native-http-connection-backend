@@ -45,7 +45,7 @@ export class NativeHttpBackend implements HttpBackend {
         }
 
         return new Observable((observer: Observer<HttpEvent<any>>) => {
-            const headers = new Map<string, string>();
+            const headers: {[key: string]: string} = {};
             req.headers.keys().map(function(key) {
                 headers[key] = req.headers.get(key);
             });
@@ -143,7 +143,7 @@ export class NativeHttpBackend implements HttpBackend {
                 this.detectDataSerializerType(req),
             );
 
-            this.nativeHttp[requestMethod](url, body, { ...headers })
+            this.nativeHttp[requestMethod](url, body, headers)
                 .then((response: HTTPResponse) => {
                     fireResponse({
                         body: response.data,
