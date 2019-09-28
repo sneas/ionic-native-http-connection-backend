@@ -16,9 +16,17 @@ export class HomePage {
         private nativeHttp: HTTP,
     ) {
         this.platform.ready().then(() => {
-            this.nativeHttp.post('https://httpbin.org/post', {a: 'b'}, {})
-                .then(() => {
-                    console.log('cordova-plugin-advanced-http is installed properly');
+            this.nativeHttp
+                .sendRequest('https://httpbin.org/post', {
+                    method: 'post',
+                    data: { a: 'b' },
+                    serializer: 'json',
+                })
+                .then(data => {
+                    console.log(
+                        'cordova-plugin-advanced-http is installed properly',
+                        data,
+                    );
                 });
         });
     }
