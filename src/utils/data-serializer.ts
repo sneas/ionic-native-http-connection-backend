@@ -25,13 +25,20 @@ export const getSerializerByContentType = (
 export const guessSerializer = (req: HttpRequest<any>): DataSerializer => {
     const method = req.method.toLowerCase();
 
-    if (method === 'post' || method === 'put' || method === 'patch') {
-        if (typeof req.body !== 'string') {
-            return 'json';
-        }
+    if (!(method === 'post' || method === 'put' || method === 'patch')) {
+        return 'urlencoded';
     }
 
-    return 'urlencoded';
+    if (typeof req.body !== 'string') {
+        return 'json';
+    }
+
+    try {
+        JSON.parse(req.body);
+        return 'json';
+    } catch (e) {
+        return 'urlencoded';
+    }
 };
 
 export const detectSerializer = (req: HttpRequest<any>): DataSerializer => {

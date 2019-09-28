@@ -28,4 +28,8 @@ describe('bodyToObject', () => {
     it('returns body as is', () => {
         expect(bodyToObject({ a: 'b' })).toEqual({ a: 'b' });
     });
+
+    it('should parse json body', () => {
+        expect(bodyToObject('{"a": "b"}')).toEqual({ a: 'b' });
+    });
 });
