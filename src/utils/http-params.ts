@@ -23,7 +23,11 @@ export const bodyToObject = (
     body: HttpParamsObject | string | HttpParams,
 ): HttpParamsObject => {
     if (typeof body === 'string') {
-        return queryToObject(body);
+        try {
+            return JSON.parse(body);
+        } catch (e) {
+            return queryToObject(body);
+        }
     } else if (body instanceof HttpParams) {
         return collectionToObject(body);
     } else {

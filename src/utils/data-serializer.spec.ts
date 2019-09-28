@@ -43,6 +43,14 @@ describe('guessSerializer', () => {
             ),
         ).toBe('urlencoded');
     });
+
+    it('should predict json when body is a JSON string', () => {
+        expect(
+            guessSerializer(
+                new HttpRequest<any>('POST', 'http://test.com', '{"a": "b"}'),
+            ),
+        ).toBe('json');
+    });
 });
 
 describe('detectSerializer', () => {
