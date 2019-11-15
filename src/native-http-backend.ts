@@ -45,7 +45,7 @@ export class NativeHttpBackend implements HttpBackend {
         }
 
         return new Observable((observer: Observer<HttpEvent<any>>) => {
-            const headers: {[key: string]: string} = {};
+            const headers: { [key: string]: string } = {};
             req.headers.keys().map(function(key) {
                 headers[key] = req.headers.get(key);
             });
@@ -79,6 +79,7 @@ export class NativeHttpBackend implements HttpBackend {
                 body: string;
                 status: number;
                 headers: any;
+                url: string;
             }) => {
                 // ok determines whether the response will be transmitted on the event or
                 // error channel. Unsuccessful status codes (not 2xx) will always be errors,
@@ -88,9 +89,19 @@ export class NativeHttpBackend implements HttpBackend {
 
                 let body: any = response.body;
 
+                const responseContentType: string =
+                    response &&
+                    response.headers &&
+                    response.headers['content-type'];
+
                 // Check whether the body needs to be parsed as JSON (in many cases the browser
                 // will have done that already).
-                if (req.responseType === 'json' && typeof body === 'string') {
+                if (
+                    req.responseType === 'json' &&
+                    typeof body === 'string' &&
+                    (responseContentType || '').indexOf('application/json') ===
+                        0
+                ) {
                     // Save the original body, before attempting XSSI prefix stripping.
                     const originalBody = body;
                     body = body.replace(XSSI_PREFIX, '');
@@ -121,6 +132,7 @@ export class NativeHttpBackend implements HttpBackend {
                             body,
                             headers: new HttpHeaders(response.headers),
                             status: response.status,
+                            url: response.url,
                         }),
                     );
                     // The full body has been received and delivered, no further events
@@ -134,6 +146,7 @@ export class NativeHttpBackend implements HttpBackend {
                             error: body,
                             headers: new HttpHeaders(response.headers),
                             status: response.status,
+                            url: response.url,
                         }),
                     );
                 }
@@ -149,6 +162,7 @@ export class NativeHttpBackend implements HttpBackend {
                         body: response.data,
                         status: response.status,
                         headers: response.headers,
+                        url: response.url,
                     });
                 })
                 .catch((error: HTTPError) => {
@@ -156,6 +170,7 @@ export class NativeHttpBackend implements HttpBackend {
                         body: error.error,
                         status: error.status || 599, // https://httpstatuses.com/599
                         headers: error.headers,
+                        url: error.url,
                     });
                 });
         });
