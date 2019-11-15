@@ -79,7 +79,10 @@ export class NativeHttpConnectionD implements Connection {
                  * parameters are passed to Http component. Even though XMLHttpRequest automatically
                  * converts unencoded URL, NativeHTTP requires it to be always encoded.
                  */
-                const url = encodeURI(decodeURI(req.url)).replace('%252F', '%2F');
+                const url = encodeURI(decodeURI(req.url)).replace(
+                    '%252F',
+                    '%2F',
+                );
 
                 nativeHttp.setDataSerializer(
                     this.detectDataSerializerType(req),
@@ -93,6 +96,7 @@ export class NativeHttpConnectionD implements Connection {
                                 body: response.data,
                                 status: response.status,
                                 headers: new Headers(response.headers),
+                                url: response.url,
                             }),
                             baseResponseOptions,
                         );
@@ -104,6 +108,7 @@ export class NativeHttpConnectionD implements Connection {
                                 body: error.error,
                                 status: error.status || 599, // https://httpstatuses.com/599
                                 headers: new Headers(error.headers),
+                                url: null,
                             }),
                             baseResponseOptions,
                         );

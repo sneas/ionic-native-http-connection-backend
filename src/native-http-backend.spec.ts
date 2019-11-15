@@ -15,6 +15,7 @@ describe('NativeHttpBackend', () => {
 
     // Shared test variables
     const textContentTypeValue: string = 'text/plain; charset=UTF8';
+    const jsonContentTypeValue: string = 'application/json;charset=UTF8';
     const testXmlString = `<?xml version="1.0" encoding="UTF-8"?><note><body>test</body></note>`;
 
     beforeEach(() => {
@@ -41,7 +42,7 @@ describe('NativeHttpBackend', () => {
         httpBackend
             .handle(request)
             .subscribe((response: HttpResponse<string>) => {
-                expect(response.body).toEqual({});
+                expect(response.body).toEqual('{}');
                 expect(response.status).toEqual(201);
                 done();
             });
@@ -207,7 +208,7 @@ describe('NativeHttpBackend', () => {
         });
     });
 
-    it(`parses response body when responseType is json and body is string`, done => {
+    it(`parses response body when responseType is json and body is string and response content-type is json`, done => {
         const request = new HttpRequest('GET', 'http://test.com', {
             responseType: 'json',
         });
@@ -216,6 +217,9 @@ describe('NativeHttpBackend', () => {
             Promise.resolve({
                 status: 200,
                 data: '{"a": "b"}',
+                headers: {
+                    'content-type': jsonContentTypeValue,
+                },
             }),
         );
 
@@ -227,7 +231,7 @@ describe('NativeHttpBackend', () => {
             });
     });
 
-    it(`throws error when responseType is json and response body can't be parsed`, done => {
+    it(`throws error when responseType is json and response content-type is json and response body can't be parsed`, done => {
         const request = new HttpRequest('GET', 'http://test.com', {
             responseType: 'json',
         });
@@ -236,6 +240,9 @@ describe('NativeHttpBackend', () => {
             Promise.resolve({
                 status: 200,
                 data: '"a": "b"}',
+                headers: {
+                    'content-type': jsonContentTypeValue,
+                },
             }),
         );
 
