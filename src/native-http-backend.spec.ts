@@ -459,7 +459,7 @@ describe('NativeHttpBackend', () => {
                 expect.anything(),
                 expect.objectContaining({
                     headers: {
-                        headerName1: 'header1Value1',
+                        headerName1: ['header1Value1', 'header1Value2'],
                         headerName2: 'header2Value1',
                     },
                 }),
@@ -565,12 +565,13 @@ describe('NativeHttpBackend', () => {
             params: new HttpParams().append('a', '1').append('b', '2'),
         });
 
-        const spy = spyOn(http, 'sendRequest').and.returnValue(
+        spyOn(http, 'sendRequest').and.returnValue(
             Promise.resolve({
                 status: 200,
                 data: {},
             }),
         );
+
         httpBackend.handle(request).subscribe(() => {
             expect(http.sendRequest).toHaveBeenCalledWith('http://test.com', {
                 params: { a: '1', b: '2' },
@@ -589,12 +590,13 @@ describe('NativeHttpBackend', () => {
             b: '2',
         });
 
-        const spy = spyOn(http, 'sendRequest').and.returnValue(
+        spyOn(http, 'sendRequest').and.returnValue(
             Promise.resolve({
                 status: 200,
                 data: {},
             }),
         );
+
         httpBackend.handle(request).subscribe(() => {
             expect(http.sendRequest).toHaveBeenCalledWith('http://test.com', {
                 data: { a: '1', b: '2' },
@@ -603,6 +605,67 @@ describe('NativeHttpBackend', () => {
                 headers: {},
                 responseType: 'text',
             });
+            done();
+        });
+    });
+
+    it(`specifies correct params for get requests when a key has multiple values`, done => {
+        const request = new HttpRequest('GET', 'http://test.com', {
+            params: new HttpParams().append('a', '1').append('a', '2'),
+        });
+
+        const spy = spyOn(http, 'sendRequest').and.returnValue(
+            Promise.resolve({
+                status: 200,
+                data: {},
+            }),
+        );
+        httpBackend.handle(request).subscribe(() => {
+            expect(http.sendRequest).toHaveBeenCalledWith('http://test.com', {
+                params: { a: ['1', '2'] },
+                method: 'get',
+                serializer: 'urlencoded',
+                headers: {},
+                responseType: 'text',
+            });
+            done();
+        });
+    });
+
+    it('posts http-param body with a key having multiple values', done => {
+        const httpParamBody = new HttpParams()
+            .append('a', '1')
+            .append('a', '2');
+
+        const request = new HttpRequest(
+            'POST',
+            'http://test.com',
+            httpParamBody,
+            {
+                headers: new HttpHeaders({
+                    'Content-Type': ['application/x-www-form-urlencoded'],
+                }),
+            },
+        );
+
+        spyOn(http, 'sendRequest').and.returnValue(
+            Promise.resolve({
+                status: 200,
+                data: '{}',
+                headers: {},
+            }),
+        );
+
+        httpBackend.handle(request).subscribe(() => {
+            expect(http.sendRequest).toHaveBeenCalledWith(
+                expect.anything(),
+                expect.objectContaining({
+                    data: {
+                        a: ['1', '2'],
+                    },
+                    serializer: 'urlencoded',
+                }),
+            );
             done();
         });
     });
