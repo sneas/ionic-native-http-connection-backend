@@ -614,7 +614,7 @@ describe('NativeHttpBackend', () => {
             params: new HttpParams().append('a', '1').append('a', '2'),
         });
 
-        const spy = spyOn(http, 'sendRequest').and.returnValue(
+        spyOn(http, 'sendRequest').and.returnValue(
             Promise.resolve({
                 status: 200,
                 data: {},
