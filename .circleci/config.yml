@@ -38,4 +38,4 @@ workflows:
             - test
           filters:
             branches:
-              only: master
+              only: angular8-ionic4-native5

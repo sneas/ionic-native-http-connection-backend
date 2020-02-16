@@ -102,10 +102,10 @@
     ]
   },
   "publishConfig": {
-    "tag": "next"
+    "tag": "angular8-ionic4-native5"
   },
   "release": {
-    "branch": "master",
+    "branch": "angular8-ionic4-native5",
     "prepare": [
       "@semantic-release/npm",
       {
