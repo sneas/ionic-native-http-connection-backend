@@ -1,0 +1,22 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`getRequestOptions should include data param in case of data request 1`] = `
+Object {
+  "data": Object {
+    "a": "b",
+  },
+  "headers": Object {},
+  "method": "post",
+  "responseType": "text",
+  "serializer": "json",
+}
+`;
+
+exports[`getRequestOptions should skip data param in case of non-data request 1`] = `
+Object {
+  "headers": Object {},
+  "method": "get",
+  "responseType": "text",
+  "serializer": "urlencoded",
+}
+`;

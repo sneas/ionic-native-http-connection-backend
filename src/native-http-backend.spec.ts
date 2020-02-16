@@ -266,10 +266,9 @@ describe('NativeHttpBackend', () => {
 
         httpBackend.handle(request).subscribe(() => {
             expect(http.sendRequest).toBeCalledWith(
-                'http://test.com',
+                'http://test.com?a=b&c=d',
                 expect.objectContaining({
                     method: 'get',
-                    params: { a: 'b', c: 'd' },
                 }),
             );
             done();
@@ -468,78 +467,6 @@ describe('NativeHttpBackend', () => {
         });
     });
 
-    it('should encode URL', done => {
-        const request = new HttpRequest(
-            'POST',
-            'http://api.com/get something?with= wierd variables ',
-            'a=b&c=d',
-        );
-
-        spyOn(http, 'sendRequest').and.returnValue(
-            Promise.resolve({
-                status: 200,
-                data: '{}',
-                headers: {},
-            }),
-        );
-
-        httpBackend.handle(request).subscribe(() => {
-            expect(http.sendRequest).toHaveBeenCalledWith(
-                'http://api.com/get%20something?with=%20wierd%20variables%20',
-                expect.anything(),
-            );
-            done();
-        });
-    });
-
-    it('should not encode already encoded URL', done => {
-        const request = new HttpRequest(
-            'POST',
-            'http://api.com/get%20something?with=%20wierd%20variables%20',
-            'a=b&c=d',
-        );
-
-        spyOn(http, 'sendRequest').and.returnValue(
-            Promise.resolve({
-                status: 200,
-                data: '{}',
-                headers: {},
-            }),
-        );
-
-        httpBackend.handle(request).subscribe(() => {
-            expect(http.sendRequest).toHaveBeenCalledWith(
-                'http://api.com/get%20something?with=%20wierd%20variables%20',
-                expect.anything(),
-            );
-            done();
-        });
-    });
-
-    it('should not encode already encoded URL which includes reserved characters', done => {
-        const request = new HttpRequest(
-            'POST',
-            'http://api.com/test?reserved=%3B%2C%2F%3F%3A%40%26%3D%2B%24%23',
-            'a=b&c=d',
-        );
-
-        spyOn(http, 'sendRequest').and.returnValue(
-            Promise.resolve({
-                status: 200,
-                data: '{}',
-                headers: {},
-            }),
-        );
-
-        httpBackend.handle(request).subscribe(() => {
-            expect(http.sendRequest).toHaveBeenCalledWith(
-                'http://api.com/test?reserved=%3B%2C%2F%3F%3A%40%26%3D%2B%24%23',
-                expect.anything(),
-            );
-            done();
-        });
-    });
-
     it(`should pass the responseType to the native HTTP plugin`, done => {
         const request = new HttpRequest('GET', 'http://test.com', {
             responseType: 'blob',
@@ -560,31 +487,7 @@ describe('NativeHttpBackend', () => {
         });
     });
 
-    it(`should only use native HTTP plugin "params" option for get requests`, done => {
-        const request = new HttpRequest('GET', 'http://test.com', {
-            params: new HttpParams().append('a', '1').append('b', '2'),
-        });
-
-        spyOn(http, 'sendRequest').and.returnValue(
-            Promise.resolve({
-                status: 200,
-                data: {},
-            }),
-        );
-
-        httpBackend.handle(request).subscribe(() => {
-            expect(http.sendRequest).toHaveBeenCalledWith('http://test.com', {
-                params: { a: '1', b: '2' },
-                method: 'get',
-                serializer: 'urlencoded',
-                headers: {},
-                responseType: 'text',
-            });
-            done();
-        });
-    });
-
-    it(`should only use native HTTP plugin "data" option for post requests`, done => {
+    it(`should use native HTTP plugin "data" option for post requests`, done => {
         const request = new HttpRequest('POST', 'http://test.com', {
             a: '1',
             b: '2',
@@ -621,13 +524,15 @@ describe('NativeHttpBackend', () => {
             }),
         );
         httpBackend.handle(request).subscribe(() => {
-            expect(http.sendRequest).toHaveBeenCalledWith('http://test.com', {
-                params: { a: ['1', '2'] },
-                method: 'get',
-                serializer: 'urlencoded',
-                headers: {},
-                responseType: 'text',
-            });
+            expect(http.sendRequest).toHaveBeenCalledWith(
+                'http://test.com?a=1&a=2',
+                {
+                    method: 'get',
+                    serializer: 'urlencoded',
+                    headers: {},
+                    responseType: 'text',
+                },
+            );
             done();
         });
     });
