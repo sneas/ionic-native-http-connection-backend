@@ -11,19 +11,7 @@ import { HTTP, HTTPResponse } from '@ionic-native/http/ngx';
 import { Observable, Observer } from 'rxjs';
 
 import { HTTPError } from './http-error';
-import { detectSerializer } from './utils/data-serializer';
-import { paramsOrData } from './utils/request-options';
-import { collectionToObject } from './utils/collection-to-object';
-import { detectResponseType } from './utils/response-type';
-
-type HTTPRequestMethod =
-    | 'get'
-    | 'post'
-    | 'post'
-    | 'put'
-    | 'delete'
-    | 'patch'
-    | 'head';
+import { getRequestOptions } from './utils/request-options';
 
 const XSSI_PREFIX = /^\)]}',?\n/;
 
@@ -46,16 +34,6 @@ export class NativeHttpBackend implements HttpBackend {
         }
 
         return new Observable((observer: Observer<HttpEvent<any>>) => {
-            /**
-             * Request contains either encoded either decoded URL depended on the way
-             * parameters are passed to Http component. Even though XMLHttpRequest automatically
-             * converts not encoded URL, NativeHTTP requires it to be always encoded.
-             */
-            const url = encodeURI(decodeURI(req.url)).replace(
-                /%253B|%252C|%252F|%253F|%253A|%2540|%2526|%253D|%252B|%2524|%2523/g, // ;,/?:@&=+$#
-                substring => '%' + substring.slice(3),
-            );
-
             const fireResponse = (response: {
                 body: string;
                 status: number;
@@ -121,13 +99,7 @@ export class NativeHttpBackend implements HttpBackend {
             };
 
             this.nativeHttp
-                .sendRequest(url, {
-                    method: req.method.toLowerCase() as HTTPRequestMethod,
-                    headers: collectionToObject(req.headers),
-                    serializer: detectSerializer(req),
-                    responseType: detectResponseType(req.responseType),
-                    ...paramsOrData(req),
-                })
+                .sendRequest(req.urlWithParams, getRequestOptions(req))
                 .then((response: HTTPResponse) => {
                     fireResponse({
                         body: response.data,
