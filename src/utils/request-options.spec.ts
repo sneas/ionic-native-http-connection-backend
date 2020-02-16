@@ -1,24 +1,28 @@
-import { paramsOrData } from './request-options';
-import { HttpHeaders, HttpParams, HttpRequest } from '@angular/common/http';
+import { getRequestData, getRequestOptions } from './request-options';
+import { HttpHeaders, HttpRequest } from '@angular/common/http';
 
-describe('paramsOrData', () => {
-    it('detects params', () => {
-        expect(
-            paramsOrData(
-                new HttpRequest<any>('GET', 'http://something.com', {
-                    params: new HttpParams({ fromString: 'a=b' }),
-                }),
-            ),
-        ).toEqual({
-            params: {
-                a: 'b',
-            },
-        });
+describe('getRequestOptions', () => {
+    it('should skip data param in case of non-data request', () => {
+        const request = new HttpRequest<any>('GET', 'http://something.com?a=b');
+        expect(getRequestOptions(request)).toMatchSnapshot();
     });
 
+    it('should include data param in case of data request', () => {
+        const request = new HttpRequest<any>(
+            'POST',
+            'http://something.com?a=b',
+            {
+                a: 'b',
+            },
+        );
+        expect(getRequestOptions(request)).toMatchSnapshot();
+    });
+});
+
+describe('getRequestData', () => {
     it('returns body data as is in case of text request', () => {
         expect(
-            paramsOrData(
+            getRequestData(
                 new HttpRequest<any>('POST', 'http://something.com', 'a=b', {
                     headers: new HttpHeaders({
                         'content-type': 'text/plain',
@@ -30,9 +34,9 @@ describe('paramsOrData', () => {
         });
     });
 
-    it('detects data', () => {
+    it('properly returns data', () => {
         expect(
-            paramsOrData(
+            getRequestData(
                 new HttpRequest<any>('POST', 'http://something.com', 'a=b'),
             ),
         ).toEqual({
