@@ -40,7 +40,7 @@
     "@ionic-native/http": "^5.23.0",
     "@ionic/angular": "^5.0.7",
     "@ionic/core": "^5.0.7",
-    "@semantic-release/git": "^7.0.18",
+    "@semantic-release/git": "^9.0.0",
     "@types/jest": "^25.1.4",
     "babel-jest": "^25.2.3",
     "commitizen": "^4.0.3",
@@ -53,7 +53,7 @@
     "prettier": "^2.0.2",
     "rimraf": "^3.0.2",
     "rxjs": "^6.5.4",
-    "semantic-release": "^15.14.0",
+    "semantic-release": "^17.0.4",
     "ts-jest": "^25.2.1",
     "typescript": "~3.8.3",
     "zone.js": "^0.10.3"
@@ -106,7 +106,7 @@
     "tag": "next"
   },
   "release": {
-    "branch": "master",
+    "branches": "master",
     "prepare": [
       "@semantic-release/npm",
       {
