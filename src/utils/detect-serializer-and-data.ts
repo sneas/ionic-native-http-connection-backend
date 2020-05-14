@@ -16,7 +16,7 @@ export const detectSerializerAndData = (
     }
 
     const contentType =
-        req.headers.get('Content-Type') ?? req.detectContentTypeHeader() ?? '';
+        req.headers.get('Content-Type') || req.detectContentTypeHeader() || '';
 
     if (contentType.indexOf('text/') === 0) {
         return {
