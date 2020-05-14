@@ -52,7 +52,7 @@ describe('NativeHttpBackend', () => {
         });
     });
 
-    it('initiates error when response is successful but status is not', done => {
+    it('initiates error when response is successful but status is not', (done) => {
         const request = new HttpRequest('POST', '', '');
 
         httpBackend.handle(request).subscribe(
@@ -72,7 +72,7 @@ describe('NativeHttpBackend', () => {
         });
     });
 
-    it('correctly transforms request body and headers to Native HTTP requirements', done => {
+    it('correctly transforms request body and headers to Native HTTP requirements', (done) => {
         const request = new HttpRequest('POST', 'http://test.com', 'a=b&c=d', {
             headers: new HttpHeaders({
                 headerName1: ['headerValue1'],
@@ -93,11 +93,10 @@ describe('NativeHttpBackend', () => {
                 expect.anything(),
                 expect.objectContaining({
                     method: 'post',
-                    data: {
-                        a: 'b',
-                        c: 'd',
-                    },
+                    data: 'a=b&c=d',
+                    serializer: 'utf8',
                     headers: {
+                        'Content-Type': 'text/plain',
                         headerName1: 'headerValue1',
                         headerName2: 'headerValue2',
                     },
@@ -107,7 +106,7 @@ describe('NativeHttpBackend', () => {
         });
     });
 
-    it('does not transforms request body and transforms correctly headers to Native HTTP requirements (for Content-Type: text/*)', done => {
+    it('does not transforms request body and transforms correctly headers to Native HTTP requirements (for Content-Type: text/*)', (done) => {
         const request = new HttpRequest(
             'POST',
             'http://test.com',
@@ -143,7 +142,7 @@ describe('NativeHttpBackend', () => {
         });
     });
 
-    it('loves and understands array as body', done => {
+    it('loves and understands array as body', (done) => {
         const request = new HttpRequest('POST', 'http://test.com', ['a', 'b']);
 
         spyOn(http, 'sendRequest').and.returnValue(
@@ -158,15 +157,15 @@ describe('NativeHttpBackend', () => {
             expect(http.sendRequest).toHaveBeenCalledWith(
                 expect.anything(),
                 expect.objectContaining({
-                    data: ['a', 'b'],
-                    serializer: 'json',
+                    data: '["a","b"]',
+                    serializer: 'utf8',
                 }),
             );
             done();
         });
     });
 
-    it('loves and understands http-params as body', done => {
+    it('loves and understands http-params as body', (done) => {
         const httpParamBody = new HttpParams().set('a', '1').set('b', '2');
         const request = new HttpRequest(
             'POST',
@@ -182,19 +181,23 @@ describe('NativeHttpBackend', () => {
             }),
         );
 
+        const expectedData = new FormData();
+        expectedData.append('a', '1');
+        expectedData.append('b', '2');
+
         httpBackend.handle(request).subscribe(() => {
             expect(http.sendRequest).toHaveBeenCalledWith(
                 expect.anything(),
                 expect.objectContaining({
-                    data: { a: '1', b: '2' },
-                    serializer: 'json',
+                    data: expectedData,
+                    serializer: 'multipart',
                 }),
             );
             done();
         });
     });
 
-    it('uses urlencoded serialization for corresponding content type and http-param body', done => {
+    it('uses urlencoded serialization for corresponding content type and http-param body', (done) => {
         const httpParamBody = new HttpParams()
             .append('a', '1')
             .append('b', '2');
@@ -217,19 +220,23 @@ describe('NativeHttpBackend', () => {
             }),
         );
 
+        const expectedData = new FormData();
+        expectedData.append('a', '1');
+        expectedData.append('b', '2');
+
         httpBackend.handle(request).subscribe(() => {
             expect(http.sendRequest).toHaveBeenCalledWith(
                 expect.anything(),
                 expect.objectContaining({
-                    data: { a: '1', b: '2' },
-                    serializer: 'urlencoded',
+                    data: expectedData,
+                    serializer: 'multipart',
                 }),
             );
             done();
         });
     });
 
-    it('converts HTTPResponse headers object to Headers', done => {
+    it('converts HTTPResponse headers object to Headers', (done) => {
         const request = new HttpRequest('POST', 'http://test.com', 'a=b&c=d');
 
         spyOn(http, 'sendRequest').and.returnValue(
@@ -252,7 +259,7 @@ describe('NativeHttpBackend', () => {
             });
     });
 
-    it('passes get params to the plugin call', done => {
+    it('passes get params to the plugin call', (done) => {
         const request = new HttpRequest('GET', 'http://test.com', {
             params: new HttpParams().append('a', 'b').append('c', 'd'),
         });
@@ -275,7 +282,7 @@ describe('NativeHttpBackend', () => {
         });
     });
 
-    it(`parses response body when responseType is json and body is string`, done => {
+    it(`parses response body when responseType is json and body is string`, (done) => {
         const request = new HttpRequest('GET', 'http://test.com', {
             responseType: 'json',
         });
@@ -295,7 +302,7 @@ describe('NativeHttpBackend', () => {
             });
     });
 
-    it(`throws error when responseType is json and response body can't be parsed`, done => {
+    it(`throws error when responseType is json and response body can't be parsed`, (done) => {
         const request = new HttpRequest('GET', 'http://test.com', {
             responseType: 'json',
         });
@@ -318,7 +325,7 @@ describe('NativeHttpBackend', () => {
         );
     });
 
-    it(`returns body as is when responseType is json but body is not string`, done => {
+    it(`returns body as is when responseType is json but body is not string`, (done) => {
         const request = new HttpRequest('GET', 'http://test.com', {
             responseType: 'json',
         });
@@ -341,7 +348,7 @@ describe('NativeHttpBackend', () => {
         );
     });
 
-    it(`returns body as is when responseType is not json`, done => {
+    it(`returns body as is when responseType is not json`, (done) => {
         const request = new HttpRequest('GET', 'http://test.com', {
             responseType: 'text',
         });
@@ -361,7 +368,7 @@ describe('NativeHttpBackend', () => {
             });
     });
 
-    it('should set json serializer when post json request', done => {
+    it('should set utf8 serializer when post json request', (done) => {
         const request = new HttpRequest('POST', 'http://test.com', { a: 'b' });
 
         spyOn(http, 'sendRequest').and.returnValue(
@@ -377,13 +384,16 @@ describe('NativeHttpBackend', () => {
             .subscribe((response: HttpResponse<string>) => {
                 expect(http.sendRequest).toBeCalledWith(
                     expect.anything(),
-                    expect.objectContaining({ serializer: 'json' }),
+                    expect.objectContaining({
+                        data: '{"a":"b"}',
+                        serializer: 'utf8',
+                    }),
                 );
                 done();
             });
     });
 
-    it('should set urlencode serializer when post plain request', done => {
+    it('should set utf8 serializer when post plain request', (done) => {
         const request = new HttpRequest('POST', 'http://test.com', 'a=b');
 
         spyOn(http, 'sendRequest').and.returnValue(
@@ -399,13 +409,16 @@ describe('NativeHttpBackend', () => {
             .subscribe((response: HttpResponse<string>) => {
                 expect(http.sendRequest).toBeCalledWith(
                     expect.anything(),
-                    expect.objectContaining({ serializer: 'urlencoded' }),
+                    expect.objectContaining({
+                        serializer: 'utf8',
+                        data: 'a=b',
+                    }),
                 );
                 done();
             });
     });
 
-    it("should set utf8 serializer when sending request with header 'Content-Type: 'text/...'", done => {
+    it("should set utf8 serializer when sending request with header 'Content-Type: 'text/...'", (done) => {
         const request = new HttpRequest(
             'POST',
             'http://test.com',
@@ -437,11 +450,12 @@ describe('NativeHttpBackend', () => {
             });
     });
 
-    it(`uses the first request header in case it is an array`, done => {
+    it(`uses the first request header in case it is an array`, (done) => {
         const request = new HttpRequest('POST', 'http://test.com', 'a=b&c=d', {
             headers: new HttpHeaders({
                 headerName1: ['header1Value1', 'header1Value2'],
                 headerName2: 'header2Value1',
+                headerName3: ['header3Value1'],
             }),
         });
 
@@ -458,8 +472,10 @@ describe('NativeHttpBackend', () => {
                 expect.anything(),
                 expect.objectContaining({
                     headers: {
-                        headerName1: ['header1Value1', 'header1Value2'],
+                        'Content-Type': 'text/plain',
+                        headerName1: 'header1Value1,header1Value2',
                         headerName2: 'header2Value1',
+                        headerName3: 'header3Value1',
                     },
                 }),
             );
@@ -467,7 +483,7 @@ describe('NativeHttpBackend', () => {
         });
     });
 
-    it(`should pass the responseType to the native HTTP plugin`, done => {
+    it(`should pass the responseType to the native HTTP plugin`, (done) => {
         const request = new HttpRequest('GET', 'http://test.com', {
             responseType: 'blob',
         });
@@ -487,7 +503,7 @@ describe('NativeHttpBackend', () => {
         });
     });
 
-    it(`should use native HTTP plugin "data" option for post requests`, done => {
+    it(`should use native HTTP plugin "data" option for post requests`, (done) => {
         const request = new HttpRequest('POST', 'http://test.com', {
             a: '1',
             b: '2',
@@ -502,17 +518,19 @@ describe('NativeHttpBackend', () => {
 
         httpBackend.handle(request).subscribe(() => {
             expect(http.sendRequest).toHaveBeenCalledWith('http://test.com', {
-                data: { a: '1', b: '2' },
+                data: '{"a":"1","b":"2"}',
                 method: 'post',
-                serializer: 'json',
-                headers: {},
+                serializer: 'utf8',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
                 responseType: 'text',
             });
             done();
         });
     });
 
-    it(`specifies correct params for get requests when a key has multiple values`, done => {
+    it(`specifies correct params for get requests when a key has multiple values`, (done) => {
         const request = new HttpRequest('GET', 'http://test.com', {
             params: new HttpParams().append('a', '1').append('a', '2'),
         });
@@ -537,7 +555,7 @@ describe('NativeHttpBackend', () => {
         });
     });
 
-    it('posts http-param body with a key having multiple values', done => {
+    it('posts http-param body with a key having multiple values', (done) => {
         const httpParamBody = new HttpParams()
             .append('a', '1')
             .append('a', '2');
@@ -561,14 +579,16 @@ describe('NativeHttpBackend', () => {
             }),
         );
 
+        const expectedData = new FormData();
+        expectedData.append('a', '1');
+        expectedData.append('a', '2');
+
         httpBackend.handle(request).subscribe(() => {
             expect(http.sendRequest).toHaveBeenCalledWith(
                 expect.anything(),
                 expect.objectContaining({
-                    data: {
-                        a: ['1', '2'],
-                    },
-                    serializer: 'urlencoded',
+                    data: expectedData,
+                    serializer: 'multipart',
                 }),
             );
             done();
