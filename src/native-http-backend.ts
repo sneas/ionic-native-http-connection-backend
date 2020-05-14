@@ -99,6 +99,7 @@ export class NativeHttpBackend implements HttpBackend {
             };
 
             this.nativeHttp
+                // @ts-ignore
                 .sendRequest(req.urlWithParams, getRequestOptions(req))
                 .then((response: HTTPResponse) => {
                     fireResponse({
