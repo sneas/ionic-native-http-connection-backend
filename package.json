@@ -5,7 +5,8 @@
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "scripts": {
-    "build": "rimraf aot dist && ngcc && ngc",
+    "ngcc": "ngcc --properties es2015 browser module main --async false",
+    "build": "rimraf aot dist && npm run ngcc && ngc",
     "commit": "git-cz",
     "semantic-release": "semantic-release",
     "test": "jest"
