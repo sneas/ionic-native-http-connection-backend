@@ -61,12 +61,13 @@ describe('NativeHttpBackend', () => {
             },
             (response: HttpErrorResponse) => {
                 expect(response.status).toEqual(500);
+                expect(response.url).toEqual('http://internal-error');
                 done();
             },
         );
 
         http.requestResolve({
-            url: '',
+            url: 'http://internal-error',
             status: 500,
             headers: {},
         });
@@ -255,6 +256,26 @@ describe('NativeHttpBackend', () => {
             .subscribe((response: HttpResponse<Object>) => {
                 expect(response.headers.get('header1')).toBe('value1');
                 expect(response.headers.get('header2')).toBe('value2');
+                done();
+            });
+    });
+
+    it('passes request url to HttpResponse', (done) => {
+        const request = new HttpRequest('POST', 'http://test.com', 'a=b&c=d');
+
+        spyOn(http, 'sendRequest').and.returnValue(
+            Promise.resolve({
+                status: 200,
+                data: '{}',
+                headers: {},
+                url: 'http://test.com',
+            }),
+        );
+
+        httpBackend
+            .handle(request)
+            .subscribe((response: HttpResponse<Object>) => {
+                expect(response.url).toBe('http://test.com');
                 done();
             });
     });

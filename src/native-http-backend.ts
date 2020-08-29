@@ -38,6 +38,7 @@ export class NativeHttpBackend implements HttpBackend {
                 body: string;
                 status: number;
                 headers: any;
+                url: string;
             }) => {
                 // ok determines whether the response will be transmitted on the event or
                 // error channel. Unsuccessful status codes (not 2xx) will always be errors,
@@ -80,6 +81,7 @@ export class NativeHttpBackend implements HttpBackend {
                             body,
                             headers: new HttpHeaders(response.headers),
                             status: response.status,
+                            url: response.url,
                         }),
                     );
                     // The full body has been received and delivered, no further events
@@ -93,6 +95,7 @@ export class NativeHttpBackend implements HttpBackend {
                             error: body,
                             headers: new HttpHeaders(response.headers),
                             status: response.status,
+                            url: response.url,
                         }),
                     );
                 }
@@ -106,6 +109,7 @@ export class NativeHttpBackend implements HttpBackend {
                         body: response.data,
                         status: response.status,
                         headers: response.headers,
+                        url: response.url,
                     });
                 })
                 .catch((error: HTTPError) => {
@@ -113,6 +117,7 @@ export class NativeHttpBackend implements HttpBackend {
                         body: error.error,
                         status: error.status || 599, // https://httpstatuses.com/599
                         headers: error.headers,
+                        url: error.url,
                     });
                 });
         });
