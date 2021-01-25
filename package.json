@@ -1,6 +1,6 @@
 {
   "name": "ionic-native-http-connection-backend",
-  "version": "8.1.1",
+  "version": "8.1.2",
   "description": "A solution to CORS problem with Ionic and WKWebView",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
