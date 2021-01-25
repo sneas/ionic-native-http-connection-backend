@@ -49,6 +49,13 @@ export const detectSerializerAndData = (
         };
     }
 
+    if (req.body === null || req.body === undefined) {
+        return {
+            serializer: 'urlencoded',
+            data: {},
+        };
+    }
+
     return {
         serializer: 'urlencoded',
         data: bodyToObject(req.body),
