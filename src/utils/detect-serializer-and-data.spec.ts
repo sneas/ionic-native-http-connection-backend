@@ -132,6 +132,28 @@ describe('detectSerializerAndData', () => {
         });
     });
 
+    test('serializer: urlencoded, body empty object. On null body', () => {
+        expect(
+            detectSerializerAndData(
+                new HttpRequest<any>('POST', 'http://something.com', null),
+            ),
+        ).toStrictEqual({
+            serializer: 'urlencoded',
+            data: {},
+        });
+    });
+
+    test('serializer: urlencoded, body empty object. On undefined body', () => {
+        expect(
+            detectSerializerAndData(
+                new HttpRequest<any>('POST', 'http://something.com', undefined),
+            ),
+        ).toStrictEqual({
+            serializer: 'urlencoded',
+            data: {},
+        });
+    });
+
     test('serializer: urlencoded, body object. On anything else', () => {
         expect(
             detectSerializerAndData(
