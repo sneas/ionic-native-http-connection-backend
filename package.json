@@ -104,7 +104,7 @@
     ]
   },
   "publishConfig": {
-    "tag": "next"
+    "tag": "latest"
   },
   "release": {
     "branches": "master",
