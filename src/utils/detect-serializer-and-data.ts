@@ -25,7 +25,7 @@ export const detectSerializerAndData = (
         };
     }
 
-    if (contentType.indexOf('application/json') === 0) {
+    if (/^application\/(.*)?json(;.*)?$/gi.test(contentType)) {
         return {
             serializer: 'utf8',
             data: bodyToUtf8(req.body),
