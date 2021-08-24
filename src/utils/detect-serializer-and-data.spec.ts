@@ -96,6 +96,198 @@ describe('detectSerializerAndData', () => {
         });
     });
 
+    test('serializer: utf8, data json string. On "application/json; charset=utf-8", body is a primitive', () => {
+        expect(
+            detectSerializerAndData(
+                new HttpRequest<any>(
+                    'POST',
+                    'http://something.com',
+                    'Free form text',
+                    {
+                        headers: new HttpHeaders({
+                            'content-type': 'application/json; charset=utf-8',
+                        }),
+                    },
+                ),
+            ),
+        ).toStrictEqual({
+            serializer: 'utf8',
+            data: JSON.stringify('Free form text'),
+        });
+    });
+
+    test('serializer: utf8, data json string. On "application/json; charset=utf-8", body is an object', () => {
+        expect(
+            detectSerializerAndData(
+                new HttpRequest<any>(
+                    'POST',
+                    'http://something.com',
+                    { a: 'b' },
+                    {
+                        headers: new HttpHeaders({
+                            'content-type': 'application/json; charset=utf-8',
+                        }),
+                    },
+                ),
+            ),
+        ).toStrictEqual({
+            serializer: 'utf8',
+            data: JSON.stringify({ a: 'b' }),
+        });
+    });
+
+    test('serializer: utf8, data json string. On "application/json; charset=utf-8", body is HttpParams', () => {
+        expect(
+            detectSerializerAndData(
+                new HttpRequest<any>(
+                    'POST',
+                    'http://something.com',
+                    new HttpParams({
+                        fromObject: { a: 'b', c: 'd' },
+                    }),
+                    {
+                        headers: new HttpHeaders({
+                            'content-type': 'application/json; charset=utf-8',
+                        }),
+                    },
+                ),
+            ),
+        ).toStrictEqual({
+            serializer: 'utf8',
+            data: new HttpParams({
+                fromObject: { a: 'b', c: 'd' },
+            }).toString(),
+        });
+    });
+
+    test('serializer: utf8, data json string. On "application/vnd+company.category+json", body is a primitive', () => {
+        expect(
+            detectSerializerAndData(
+                new HttpRequest<any>(
+                    'POST',
+                    'http://something.com',
+                    'Free form text',
+                    {
+                        headers: new HttpHeaders({
+                            'content-type': 'application/vnd+company.category+json',
+                        }),
+                    },
+                ),
+            ),
+        ).toStrictEqual({
+            serializer: 'utf8',
+            data: JSON.stringify('Free form text'),
+        });
+    });
+
+    test('serializer: utf8, data json string. On "application/vnd+company.category+json", body is an object', () => {
+        expect(
+            detectSerializerAndData(
+                new HttpRequest<any>(
+                    'POST',
+                    'http://something.com',
+                    { a: 'b' },
+                    {
+                        headers: new HttpHeaders({
+                            'content-type': 'application/vnd+company.category+json',
+                        }),
+                    },
+                ),
+            ),
+        ).toStrictEqual({
+            serializer: 'utf8',
+            data: JSON.stringify({ a: 'b' }),
+        });
+    });
+
+    test('serializer: utf8, data json string. On "application/vnd+company.category+json", body is HttpParams', () => {
+        expect(
+            detectSerializerAndData(
+                new HttpRequest<any>(
+                    'POST',
+                    'http://something.com',
+                    new HttpParams({
+                        fromObject: { a: 'b', c: 'd' },
+                    }),
+                    {
+                        headers: new HttpHeaders({
+                            'content-type': 'application/vnd+company.category+json',
+                        }),
+                    },
+                ),
+            ),
+        ).toStrictEqual({
+            serializer: 'utf8',
+            data: new HttpParams({
+                fromObject: { a: 'b', c: 'd' },
+            }).toString(),
+        });
+    });
+
+    test('serializer: utf8, data json string. On "application/vnd+company.category+json; charset=utf-8", body is a primitive', () => {
+        expect(
+            detectSerializerAndData(
+                new HttpRequest<any>(
+                    'POST',
+                    'http://something.com',
+                    'Free form text',
+                    {
+                        headers: new HttpHeaders({
+                            'content-type': 'application/vnd+company.category+json; charset=utf-8',
+                        }),
+                    },
+                ),
+            ),
+        ).toStrictEqual({
+            serializer: 'utf8',
+            data: JSON.stringify('Free form text'),
+        });
+    });
+
+    test('serializer: utf8, data json string. On "application/vnd+company.category+json; charset=utf-8", body is an object', () => {
+        expect(
+            detectSerializerAndData(
+                new HttpRequest<any>(
+                    'POST',
+                    'http://something.com',
+                    { a: 'b' },
+                    {
+                        headers: new HttpHeaders({
+                            'content-type': 'application/vnd+company.category+json; charset=utf-8',
+                        }),
+                    },
+                ),
+            ),
+        ).toStrictEqual({
+            serializer: 'utf8',
+            data: JSON.stringify({ a: 'b' }),
+        });
+    });
+
+    test('serializer: utf8, data json string. On "application/vnd+company.category+json; charset=utf-8", body is HttpParams', () => {
+        expect(
+            detectSerializerAndData(
+                new HttpRequest<any>(
+                    'POST',
+                    'http://something.com',
+                    new HttpParams({
+                        fromObject: { a: 'b', c: 'd' },
+                    }),
+                    {
+                        headers: new HttpHeaders({
+                            'content-type': 'application/vnd+company.category+json; charset=utf-8',
+                        }),
+                    },
+                ),
+            ),
+        ).toStrictEqual({
+            serializer: 'utf8',
+            data: new HttpParams({
+                fromObject: { a: 'b', c: 'd' },
+            }).toString(),
+        });
+    });
+
     test('serializer: multipart, body FormData. On unknown content type, body is HttpParams', () => {
         const expectedData = new FormData();
         expectedData.append('a', 'b');
