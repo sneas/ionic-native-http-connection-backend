@@ -182,16 +182,12 @@ describe('NativeHttpBackend', () => {
             }),
         );
 
-        const expectedData = new FormData();
-        expectedData.append('a', '1');
-        expectedData.append('b', '2');
-
         httpBackend.handle(request).subscribe(() => {
             expect(http.sendRequest).toHaveBeenCalledWith(
                 expect.anything(),
                 expect.objectContaining({
-                    data: expectedData,
-                    serializer: 'multipart',
+                    data: { a: '1', b: '2' },
+                    serializer: 'urlencoded',
                 }),
             );
             done();
@@ -221,16 +217,12 @@ describe('NativeHttpBackend', () => {
             }),
         );
 
-        const expectedData = new FormData();
-        expectedData.append('a', '1');
-        expectedData.append('b', '2');
-
         httpBackend.handle(request).subscribe(() => {
             expect(http.sendRequest).toHaveBeenCalledWith(
                 expect.anything(),
                 expect.objectContaining({
-                    data: expectedData,
-                    serializer: 'multipart',
+                    data: { a: '1', b: '2' },
+                    serializer: 'urlencoded',
                 }),
             );
             done();
@@ -600,16 +592,12 @@ describe('NativeHttpBackend', () => {
             }),
         );
 
-        const expectedData = new FormData();
-        expectedData.append('a', '1');
-        expectedData.append('a', '2');
-
         httpBackend.handle(request).subscribe(() => {
             expect(http.sendRequest).toHaveBeenCalledWith(
                 expect.anything(),
                 expect.objectContaining({
-                    data: expectedData,
-                    serializer: 'multipart',
+                    data: { a: ['1', '2'] },
+                    serializer: 'urlencoded',
                 }),
             );
             done();

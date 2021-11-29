@@ -288,7 +288,7 @@ describe('detectSerializerAndData', () => {
         });
     });
 
-    test('serializer: multipart, body FormData. On unknown content type, body is HttpParams', () => {
+    test('serializer: urlencoded, body FormData. On unknown content type, body is HttpParams', () => {
         const expectedData = new FormData();
         expectedData.append('a', 'b');
         expectedData.append('c', 'd');
@@ -304,8 +304,8 @@ describe('detectSerializerAndData', () => {
                 ),
             ),
         ).toStrictEqual({
-            serializer: 'multipart',
-            data: expectedData,
+            serializer: 'urlencoded',
+            data: { a: 'b', c: 'd' },
         });
     });
 
