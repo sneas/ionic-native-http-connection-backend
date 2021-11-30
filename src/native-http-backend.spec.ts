@@ -166,8 +166,40 @@ describe('NativeHttpBackend', () => {
         });
     });
 
-    it('loves and understands http-params as body', (done) => {
+    it('loves and understands non-composite http-params as body', (done) => {
         const httpParamBody = new HttpParams().set('a', '1').set('b', '2');
+        const request = new HttpRequest(
+            'POST',
+            'http://test.com',
+            httpParamBody,
+        );
+
+        spyOn(http, 'sendRequest').and.returnValue(
+            Promise.resolve({
+                status: 200,
+                data: '{}',
+                headers: {},
+            }),
+        );
+
+        httpBackend.handle(request).subscribe(() => {
+            expect(http.sendRequest).toHaveBeenCalledWith(
+                expect.anything(),
+                expect.objectContaining({
+                    data: { a: '1', b: '2' },
+                    headers: {
+                        'Content-Type':
+                            'application/x-www-form-urlencoded;charset=UTF-8',
+                    },
+                    serializer: 'urlencoded',
+                }),
+            );
+            done();
+        });
+    });
+
+    it('loves and understands composite http-params as body', (done) => {
+        const httpParamBody = new HttpParams().set('a', '1').append('a', '2');
         const request = new HttpRequest(
             'POST',
             'http://test.com',
@@ -184,7 +216,7 @@ describe('NativeHttpBackend', () => {
 
         const expectedData = new FormData();
         expectedData.append('a', '1');
-        expectedData.append('b', '2');
+        expectedData.append('a', '2');
 
         httpBackend.handle(request).subscribe(() => {
             expect(http.sendRequest).toHaveBeenCalledWith(
@@ -198,7 +230,46 @@ describe('NativeHttpBackend', () => {
         });
     });
 
-    it('uses urlencoded serialization for corresponding content type and http-param body', (done) => {
+    it('uses multipart serialization for composite http-params', (done) => {
+        const httpParamBody = new HttpParams()
+            .append('a', '1')
+            .append('a', '2');
+        const request = new HttpRequest(
+            'POST',
+            'http://test.com',
+            httpParamBody,
+            {
+                headers: new HttpHeaders({
+                    'Content-Type': ['application/x-www-form-urlencoded'],
+                }),
+            },
+        );
+
+        spyOn(http, 'sendRequest').and.returnValue(
+            Promise.resolve({
+                status: 200,
+                data: '{}',
+                headers: {},
+            }),
+        );
+
+        const expectedData = new FormData();
+        expectedData.append('a', '1');
+        expectedData.append('a', '2');
+
+        httpBackend.handle(request).subscribe(() => {
+            expect(http.sendRequest).toHaveBeenCalledWith(
+                expect.anything(),
+                expect.objectContaining({
+                    data: expectedData,
+                    serializer: 'multipart',
+                }),
+            );
+            done();
+        });
+    });
+
+    it('uses urlencoded serialization for non-composite http-params', (done) => {
         const httpParamBody = new HttpParams()
             .append('a', '1')
             .append('b', '2');
@@ -221,16 +292,15 @@ describe('NativeHttpBackend', () => {
             }),
         );
 
-        const expectedData = new FormData();
-        expectedData.append('a', '1');
-        expectedData.append('b', '2');
-
         httpBackend.handle(request).subscribe(() => {
             expect(http.sendRequest).toHaveBeenCalledWith(
                 expect.anything(),
                 expect.objectContaining({
-                    data: expectedData,
-                    serializer: 'multipart',
+                    data: {
+                        a: '1',
+                        b: '2',
+                    },
+                    serializer: 'urlencoded',
                 }),
             );
             done();

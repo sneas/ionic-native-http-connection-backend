@@ -3,6 +3,7 @@ import { RequestOptions } from './types';
 import { bodyToObject } from './http-params';
 import { httpParamsToFormData } from './http-params-to-form-data';
 import { bodyToUtf8 } from './body-to-utf8';
+import { isCompositeHttpParams } from './is-composite-http-params';
 
 const DATA_REQUEST_METHODS = ['post', 'put', 'patch'];
 
@@ -34,7 +35,8 @@ export const detectSerializerAndData = (
 
     if (
         contentType.indexOf('application/x-www-form-urlencoded') === 0 &&
-        req.body instanceof HttpParams
+        req.body instanceof HttpParams &&
+        isCompositeHttpParams(req.body)
     ) {
         return {
             serializer: 'multipart',

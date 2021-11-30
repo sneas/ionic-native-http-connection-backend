@@ -169,7 +169,8 @@ describe('detectSerializerAndData', () => {
                     'Free form text',
                     {
                         headers: new HttpHeaders({
-                            'content-type': 'application/vnd+company.category+json',
+                            'content-type':
+                                'application/vnd+company.category+json',
                         }),
                     },
                 ),
@@ -189,7 +190,8 @@ describe('detectSerializerAndData', () => {
                     { a: 'b' },
                     {
                         headers: new HttpHeaders({
-                            'content-type': 'application/vnd+company.category+json',
+                            'content-type':
+                                'application/vnd+company.category+json',
                         }),
                     },
                 ),
@@ -211,7 +213,8 @@ describe('detectSerializerAndData', () => {
                     }),
                     {
                         headers: new HttpHeaders({
-                            'content-type': 'application/vnd+company.category+json',
+                            'content-type':
+                                'application/vnd+company.category+json',
                         }),
                     },
                 ),
@@ -233,7 +236,8 @@ describe('detectSerializerAndData', () => {
                     'Free form text',
                     {
                         headers: new HttpHeaders({
-                            'content-type': 'application/vnd+company.category+json; charset=utf-8',
+                            'content-type':
+                                'application/vnd+company.category+json; charset=utf-8',
                         }),
                     },
                 ),
@@ -253,7 +257,8 @@ describe('detectSerializerAndData', () => {
                     { a: 'b' },
                     {
                         headers: new HttpHeaders({
-                            'content-type': 'application/vnd+company.category+json; charset=utf-8',
+                            'content-type':
+                                'application/vnd+company.category+json; charset=utf-8',
                         }),
                     },
                 ),
@@ -275,7 +280,8 @@ describe('detectSerializerAndData', () => {
                     }),
                     {
                         headers: new HttpHeaders({
-                            'content-type': 'application/vnd+company.category+json; charset=utf-8',
+                            'content-type':
+                                'application/vnd+company.category+json; charset=utf-8',
                         }),
                     },
                 ),
@@ -288,7 +294,7 @@ describe('detectSerializerAndData', () => {
         });
     });
 
-    test('serializer: multipart, body FormData. On unknown content type, body is HttpParams', () => {
+    test('serializer: multipart, body FormData. On unknown content type, body is non-composite HttpParams', () => {
         const expectedData = new FormData();
         expectedData.append('a', 'b');
         expectedData.append('c', 'd');
@@ -300,6 +306,27 @@ describe('detectSerializerAndData', () => {
                     'http://something.com',
                     new HttpParams({
                         fromObject: { a: 'b', c: 'd' },
+                    }),
+                ),
+            ),
+        ).toStrictEqual({
+            serializer: 'urlencoded',
+            data: { a: 'b', c: 'd' },
+        });
+    });
+
+    test('serializer: multipart, body FormData. On unknown content type, body is composite HttpParams', () => {
+        const expectedData = new FormData();
+        expectedData.append('a', 'b');
+        expectedData.append('a', 'd');
+
+        expect(
+            detectSerializerAndData(
+                new HttpRequest<any>(
+                    'POST',
+                    'http://something.com',
+                    new HttpParams({
+                        fromObject: { a: ['b', 'd'] },
                     }),
                 ),
             ),
