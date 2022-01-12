@@ -8,7 +8,7 @@ To make sure `cordova-plugin-advanced-http` is installed correctly and works pro
 
 ```typescript
 import { Platform } from '@ionic/angular';
-import { HTTP } from '@ionic-native/http/ngx';
+import { HTTP } from '@awesome-cordova-plugins/http/ngx';
 
 export class HomePage {
     constructor(

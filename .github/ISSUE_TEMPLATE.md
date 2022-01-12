@@ -5,7 +5,7 @@ Describe your issue here.
 * version of angular
 * version of ionic-native-http-connection-backend
 * version of @ionic/angular
-* version of @ionic-native/http
+* version of @awesome-cordova-plugins/http
 
 ### Steps to reproduce
 Describe how to reproduce this issue.
