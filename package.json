@@ -6,7 +6,7 @@
   "typings": "dist/index.d.ts",
   "scripts": {
     "ngcc": "ngcc --properties es2015 browser module main --async false",
-    "build": "rimraf aot dist && npm run ngcc && ngc",
+    "build": "npx rimraf aot dist && npm run ngcc && ngc",
     "commit": "git-cz",
     "semantic-release": "semantic-release",
     "test": "jest"
@@ -37,8 +37,8 @@
     "@angular/router": "^12.0.1",
     "@commitlint/cli": "^12.1.4",
     "@commitlint/config-conventional": "^12.1.4",
-    "@ionic-native/core": "^5.33.0",
-    "@ionic-native/http": "^5.33.0",
+    "@awesome-cordova-plugins/core": "^5.37.3",
+    "@awesome-cordova-plugins/http": "^5.37.3",
     "@ionic/angular": "^5.6.7",
     "@ionic/core": "^5.6.7",
     "@semantic-release/git": "^9.0.0",
@@ -61,7 +61,7 @@
   },
   "peerDependencies": {
     "@angular/core": ">=12.0.1",
-    "@ionic-native/http": "^5.12.0"
+    "@awesome-cordova-plugins/http": "^5.36.0"
   },
   "config": {
     "commitizen": {

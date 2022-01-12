@@ -4,8 +4,8 @@ import {
     HttpRequest,
     HttpResponse,
 } from '@angular/common/http';
-import { checkAvailability } from '@ionic-native/core';
-import { HTTP } from '@ionic-native/http/ngx';
+import { checkAvailability } from '@awesome-cordova-plugins/core';
+import { HTTP } from '@awesome-cordova-plugins/http/ngx';
 import { Platform } from '@ionic/angular';
 import { Observable, of } from 'rxjs';
 
@@ -14,7 +14,7 @@ import { NativeHttpFallback } from './native-http-fallback';
 
 import Mock = jest.Mock;
 
-jest.mock('@ionic-native/core');
+jest.mock('@awesome-cordova-plugins/core');
 
 class MockHttpBackend extends HttpBackend {
     handle(req: HttpRequest<any>): Observable<HttpEvent<any>> {
