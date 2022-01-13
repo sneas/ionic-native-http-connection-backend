@@ -3,7 +3,7 @@
 [![version](https://img.shields.io/npm/v/ionic-native-http-connection-backend.svg?style=flat-square)](http://npm.im/ionic-native-http-connection-backend)
 [![MIT License](https://img.shields.io/npm/l/component-library.svg?style=flat-square)](http://opensource.org/licenses/MIT)
 
-This library adds `@ionic-native/http` (when available) as a connection backend to Angular's `Http` and `HttpClient`
+This library adds `@awesome-cordova-plugins/http` (when available) as a connection backend to Angular's `Http` and `HttpClient`
 
 ## Motivation
 
@@ -12,13 +12,13 @@ Now that Apple promotes/requires the use of `WKWebView` instead of the deprecate
 
 The real solution of course is to fix the CORS issues server side - but this may not be possible with e.g. 3rd party APIs.
 
-Even though there is a way to solve CORS issues without changing server's response header by using [`@ionic-native/http`](https://ionicframework.com/docs/native/http/), this only works on device and doesn't provide all the power of Angular's `Http` and `HttpClient`.
+Even though there is a way to solve CORS issues without changing server's response header by using [`@awesome-cordova-plugins/http`](https://ionicframework.com/docs/native/http/), this only works on device and doesn't provide all the power of Angular's `Http` and `HttpClient`.
 
 ## How it works
 
 - The library provides a `HttpBackend` interface for Angular's `HttpClient`
-- This `HttpBackend` interface tries to use `@ionic-native/http` whenever it is possible (= on device with installed plugin)
-- If `HttpBackend` finds it impossible to use `@ionic-native/http`, it falls back to standard Angular code (`HttpXhrBackend`, which uses `XmlHttpRequest`)
+- This `HttpBackend` interface tries to use `@awesome-cordova-plugins/http` whenever it is possible (= on device with installed plugin)
+- If `HttpBackend` finds it impossible to use `@awesome-cordova-plugins/http`, it falls back to standard Angular code (`HttpXhrBackend`, which uses `XmlHttpRequest`)
 
 This strategy allows developers to use Angular's `HttpClient` transparently in both environments: Browser and Device.
 

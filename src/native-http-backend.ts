@@ -7,7 +7,7 @@ import {
     HttpResponse,
 } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { HTTP, HTTPResponse } from '@ionic-native/http/ngx';
+import { HTTP, HTTPResponse } from '@awesome-cordova-plugins/http/ngx';
 import { Observable, Observer } from 'rxjs';
 
 import { HTTPError } from './http-error';

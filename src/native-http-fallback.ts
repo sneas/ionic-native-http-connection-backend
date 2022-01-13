@@ -1,6 +1,6 @@
 import { HttpBackend, HttpEvent, HttpRequest } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { checkAvailability } from '@ionic-native/core';
+import { checkAvailability } from '@awesome-cordova-plugins/core';
 import { Platform } from '@ionic/angular';
 import { from, Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
