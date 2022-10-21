@@ -37,8 +37,8 @@
     "@angular/router": "^12.0.1",
     "@commitlint/cli": "^12.1.4",
     "@commitlint/config-conventional": "^12.1.4",
-    "@awesome-cordova-plugins/core": "^5.37.3",
-    "@awesome-cordova-plugins/http": "^5.37.3",
+    "@awesome-cordova-plugins/core": "^6.0.1",
+    "@awesome-cordova-plugins/http": "^6.0.1",
     "@ionic/angular": "^5.6.7",
     "@ionic/core": "^5.6.7",
     "@semantic-release/git": "^9.0.0",
@@ -61,7 +61,7 @@
   },
   "peerDependencies": {
     "@angular/core": ">=12.0.1",
-    "@awesome-cordova-plugins/http": "^5.36.0"
+    "@awesome-cordova-plugins/http": "^6.0.1"
   },
   "config": {
     "commitizen": {
