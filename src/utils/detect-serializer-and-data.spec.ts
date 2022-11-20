@@ -32,6 +32,30 @@ describe('detectSerializerAndData', () => {
         });
     });
 
+    test('serializer: utf8, data as is, on "multipart/mixed"', () => {
+        const body = `--odata_batch
+Content-Type: application/http
+Content-Transfer-Encoding: binary
+
+GET learningRequests?$count=true&$filter=RequestStatus%20eq%20'NOT_REPLIED' HTTP/1.1
+Accept: application/json
+
+--odata_batch--`;
+
+        expect(
+            detectSerializerAndData(
+                new HttpRequest<any>('POST', 'http://something.com', body, {
+                    headers: new HttpHeaders({
+                        'content-type': 'multipart/mixed; boundary=odata_batch',
+                    }),
+                }),
+            ),
+        ).toStrictEqual({
+            serializer: 'utf8',
+            data: body,
+        });
+    });
+
     test('serializer: utf8, data json string. On "application/json", body is a primitive', () => {
         expect(
             detectSerializerAndData(

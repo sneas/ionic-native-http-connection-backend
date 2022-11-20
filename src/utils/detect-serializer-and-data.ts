@@ -26,6 +26,13 @@ export const detectSerializerAndData = (
         };
     }
 
+    if (contentType.indexOf('multipart/mixed') === 0) {
+        return {
+            serializer: 'utf8',
+            data: req.body,
+        };
+    }
+
     if (/^application\/(.*)?json(;.*)?$/gi.test(contentType)) {
         return {
             serializer: 'utf8',
